@@ -53,7 +53,8 @@ class ToyFS {
   const uint fs_size;
   const uint block_size;
   const uint num_blocks;
-  DirEntry root;
+
+  // DirEntry root;
   std::list<FreeNode>free_nodes;
 
   void init_disk(const std::string& filename);
