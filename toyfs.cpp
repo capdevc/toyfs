@@ -15,11 +15,11 @@ void ToyFS::init_disk(const std::string& filename)
 {
   const std::vector<char>zeroes(num_blocks, 0);
 
-  disk_file = std::fstream(filename,
-                           std::fstream::in |
-                           std::fstream::out |
-                           std::fstream::binary |
-                           std::fstream::trunc);
+  disk_file.open(filename,
+                   std::fstream::in |
+                   std::fstream::out |
+                   std::fstream::binary |
+                   std::fstream::trunc);
 
   for (uint i = 0; i < num_blocks; ++i) {
     disk_file.write(zeroes.data(), block_size);
