@@ -35,22 +35,39 @@ void repl(const std::string filename) {
             delete(fs);
             fs = new ToyFS(filename, DISKSIZE, BLOCKSIZE);
         } else if(args[0] == "open") {
+            fs->open(args);
         } else if(args[0] == "read") {
+            fs->close(args);
         } else if(args[0] == "write") {
+            fs->write(args);
         } else if(args[0] == "seek") {
+            fs->seek(args);
         } else if(args[0] == "close") {
+            fs->close(args);
         } else if(args[0] == "mkdir") {
+            fs->mkdir(args);
         } else if(args[0] == "rmdir") {
+            fs->rmdir(args);
         } else if(args[0] == "cd") {
+            fs->cd(args);
         } else if(args[0] == "link") {
+            fs->link(args);
         } else if(args[0] == "unlink") {
+            fs->unlink(args);
         } else if(args[0] == "stat") {
+            fs->stat(args);
         } else if(args[0] == "ls") {
+            fs->ls(args);
         } else if(args[0] == "cat") {
+            fs->cat(args);
         } else if(args[0] == "cp") {
+            fs->cp(args);
         } else if(args[0] == "tree") {
+            fs->tree(args);
         } else if(args[0] == "import") {
+            fs->import(args);
         } else if(args[0] == "export") {
+            fs->FS_export(args);
         } else if(args[0] == "exit") {
             break;
         } else {

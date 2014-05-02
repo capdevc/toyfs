@@ -43,3 +43,21 @@ ToyFS::~ToyFS()
   disk_file.close();
   remove(filename.c_str());
 }
+
+void ToyFS::open(std::vector<std::string>) {}
+void ToyFS::read(std::vector<std::string>) {}
+void ToyFS::write(std::vector<std::string>) {}
+void ToyFS::seek(std::vector<std::string>) {}
+void ToyFS::close(std::vector<std::string>) {}
+void ToyFS::mkdir(std::vector<std::string>) {}
+void ToyFS::rmdir(std::vector<std::string>) {}
+void ToyFS::cd(std::vector<std::string>) {}
+void ToyFS::link(std::vector<std::string>) {}
+void ToyFS::unlink(std::vector<std::string>) {}
+void ToyFS::stat(std::vector<std::string>) {}
+void ToyFS::ls(std::vector<std::string>) {}
+void ToyFS::cat(std::vector<std::string>) {}
+void ToyFS::cp(std::vector<std::string>) {}
+void ToyFS::tree(std::vector<std::string>) {}
+void ToyFS::import(std::vector<std::string>) {}
+void ToyFS::FS_export(std::vector<std::string>) {}

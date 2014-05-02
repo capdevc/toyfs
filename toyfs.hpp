@@ -60,7 +60,23 @@ class ToyFS {
   void init_disk(const std::string& filename);
 
   public:
-
   ToyFS(const std::string& filename, const uint fs_size, const uint block_size);
   ~ToyFS();
+  void open(std::vector<std::string> args);
+  void read(std::vector<std::string> args);
+  void write(std::vector<std::string> args);
+  void seek(std::vector<std::string> args);
+  void close(std::vector<std::string> args);
+  void mkdir(std::vector<std::string> args);
+  void rmdir(std::vector<std::string> args);
+  void cd(std::vector<std::string> args);
+  void link(std::vector<std::string> args);
+  void unlink(std::vector<std::string> args);
+  void stat(std::vector<std::string> args);
+  void ls(std::vector<std::string> args);
+  void cat(std::vector<std::string> args);
+  void cp(std::vector<std::string> args);
+  void tree(std::vector<std::string> args);
+  void import(std::vector<std::string> args);
+  void FS_export(std::vector<std::string> args);
 };
