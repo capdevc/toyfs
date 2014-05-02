@@ -4,16 +4,18 @@
 #include "toyfs.hpp"
 
 #define PRMPT "sh> "
+#define DISKSIZE 102400
+#define BLOCKSIZE 1024
 
 int test_fs(const std::string filename) {
-    ToyFS(filename, 100000, 1024);
+    ToyFS(filename, DISKSIZE, BLOCKSIZE);
     return 0;
 }
 
 void repl(const std::string filename) {
     using namespace std;
     
-    ToyFS(filename, 100000, 1024);
+    ToyFS *fs = new ToyFS(filename, DISKSIZE, BLOCKSIZE);
 
     string cmd;
     vector<string> args;
@@ -30,6 +32,8 @@ void repl(const std::string filename) {
         }
 
         if(args[0] == "mkfs") {
+            delete(fs);
+            fs = new ToyFS(filename, DISKSIZE, BLOCKSIZE);
         } else if(args[0] == "open") {
         } else if(args[0] == "read") {
         } else if(args[0] == "write") {
@@ -47,12 +51,16 @@ void repl(const std::string filename) {
         } else if(args[0] == "tree") {
         } else if(args[0] == "import") {
         } else if(args[0] == "export") {
+        } else if(args[0] == "exit") {
+            break;
         } else {
             std::cout << "unknown command: " << args[0] << std::endl;
         }
         cout << PRMPT;
     }
 
+    delete(fs);
+    return;
 }
 
 int main(int argc, char **argv) {
