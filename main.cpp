@@ -32,8 +32,12 @@ void repl(const std::string filename) {
         }
 
         if(args[0] == "mkfs") {
-            delete(fs);
-            fs = new ToyFS(filename, DISKSIZE, BLOCKSIZE);
+            if(args.size() == 1) {
+                delete(fs);
+                fs = new ToyFS(filename, DISKSIZE, BLOCKSIZE);
+            } else {
+                cerr << "mkfs: too many operands" << endl;
+            }
         } else if(args[0] == "open") {
             fs->open(args);
         } else if(args[0] == "read") {

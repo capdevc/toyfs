@@ -1,6 +1,20 @@
 #include "toyfs.hpp"
 #include <cmath>
-#include <stdio.h>
+#include <iostream>
+
+#define ops_at_least(x) \
+    if((int)args.size() < x+1) {\
+        std::cerr << args[0] << ": missing operand" << std::endl;\
+        return;\
+    }
+#define ops_less_than(x) \
+    if((int)args.size() > x+1) {\
+        std::cerr << args[0] << ": too many operands" << std::endl;\
+        return;\
+    }
+#define ops_exactly(x)\
+    ops_at_least(x);\
+    ops_less_than(x);
 
 ToyFS::DirEntry::DirEntry(const std::string              name,
                           const std::weak_ptr<DirEntry>& parent)
@@ -44,20 +58,71 @@ ToyFS::~ToyFS()
   remove(filename.c_str());
 }
 
-void ToyFS::open(std::vector<std::string>) {}
-void ToyFS::read(std::vector<std::string>) {}
-void ToyFS::write(std::vector<std::string>) {}
-void ToyFS::seek(std::vector<std::string>) {}
-void ToyFS::close(std::vector<std::string>) {}
-void ToyFS::mkdir(std::vector<std::string>) {}
-void ToyFS::rmdir(std::vector<std::string>) {}
-void ToyFS::cd(std::vector<std::string>) {}
-void ToyFS::link(std::vector<std::string>) {}
-void ToyFS::unlink(std::vector<std::string>) {}
-void ToyFS::stat(std::vector<std::string>) {}
-void ToyFS::ls(std::vector<std::string>) {}
-void ToyFS::cat(std::vector<std::string>) {}
-void ToyFS::cp(std::vector<std::string>) {}
-void ToyFS::tree(std::vector<std::string>) {}
-void ToyFS::import(std::vector<std::string>) {}
-void ToyFS::FS_export(std::vector<std::string>) {}
+void ToyFS::open(std::vector<std::string> args) {
+    ops_exactly(2);
+}
+
+void ToyFS::read(std::vector<std::string> args) {
+    ops_exactly(2);
+}
+
+void ToyFS::write(std::vector<std::string> args) {
+    ops_exactly(2);
+}
+
+void ToyFS::seek(std::vector<std::string> args) {
+    ops_exactly(2);
+}
+
+void ToyFS::close(std::vector<std::string> args) {
+    ops_exactly(1);
+}
+
+void ToyFS::mkdir(std::vector<std::string> args) {
+    ops_at_least(1);
+}
+
+void ToyFS::rmdir(std::vector<std::string> args) {
+    ops_at_least(1);
+}
+
+void ToyFS::cd(std::vector<std::string> args) {
+    ops_exactly(1);
+}
+
+
+void ToyFS::link(std::vector<std::string> args) {
+    ops_exactly(2);
+}
+
+void ToyFS::unlink(std::vector<std::string> args) {
+    ops_exactly(1);
+}
+
+void ToyFS::stat(std::vector<std::string> args) {
+    ops_at_least(1);
+}
+
+void ToyFS::ls(std::vector<std::string> args) {
+    ops_exactly(0);
+}
+
+void ToyFS::cat(std::vector<std::string> args) {
+    ops_at_least(1);
+}
+
+void ToyFS::cp(std::vector<std::string> args) {
+    ops_exactly(2);
+}
+
+void ToyFS::tree(std::vector<std::string> args) {
+    ops_exactly(0);
+}
+
+void ToyFS::import(std::vector<std::string> args) {
+    ops_exactly(2);
+}
+
+void ToyFS::FS_export(std::vector<std::string> args) {
+    ops_exactly(2);
+}
