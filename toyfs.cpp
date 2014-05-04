@@ -117,7 +117,7 @@ void ToyFS::mkdir(vector<string> args) {
   ops_at_least(1);
   // just to see
   cout << args[1];
-  vector<string> path_tokens = parse_path(args[1]);
+  auto path_tokens = parse_path(args[1]);
   auto new_dir_name = path_tokens.back();
   auto where = pwd;
   if (args[1][0] == '/') {
