@@ -102,17 +102,22 @@ void ToyFS::open(vector<string> args) {
     args[1].erase(0,1);
     where = root_dir;
   }
+
   auto path_tokens = parse_path(args[1]);
   auto file_name = path_tokens.back();
+
+  // walk the input until we have the right dir
   if (path_tokens.size() >= 2) {
     path_tokens.pop_back();
     where = find_file(where, path_tokens);
   }
   if (where == nullptr) {
-    cerr << "Invalid path or something like that" << endl;
+    cerr << "Invalid path or something like that." << endl;
     return;
   }
+
   auto file = find_file(where, vector<string>{file_name});
+  // make sure we have a file, or explain why not
   if (file == nullptr) {
     if (mode == 1) {
       cout << "File does not exist." << endl;
@@ -121,6 +126,12 @@ void ToyFS::open(vector<string> args) {
       file = where->add_file(file_name);
     }
   }
+  if (file->type == dir) {
+    cout << "Cannot open a directory." << endl;
+    return;
+  }
+
+  // get a descriptor
   uint fd = next_descriptor++;
   open_files[fd] = Descriptor{mode, 0, file->inode};
   cout << fd << endl;
