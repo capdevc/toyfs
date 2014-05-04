@@ -1,6 +1,6 @@
 # A makefile
 CXX = clang++
-CFLAGS = --std=c++11 -Wall -Wextra -g -DDEBUG
+CFLAGS = --std=c++11 -Wall -Wextra -g
 
 default: main
 
