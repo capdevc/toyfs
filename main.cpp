@@ -4,24 +4,25 @@
 #include <vector>
 #include "toyfs.hpp"
 
-#define PRMPT "sh> "
-#define DISKSIZE 102400
-#define BLOCKSIZE 1024
+using ::std::string;
+using ::std::vector;
+using ::std::cout;
+using ::std::cin;
+using ::std::endl;
+using ::std::cerr;
+using ::std::istringstream;
+using ::std::getline;
 
-int test_fs(const std::string filename) {
+const string PRMPT = "sh> ";
+const uint DISKSIZE = 102400;
+const uint BLOCKSIZE = 1024;
+
+int test_fs(const string filename) {
     ToyFS(filename, DISKSIZE, BLOCKSIZE);
     return 0;
 }
 
-void repl(const std::string filename) {
-  using ::std::string;
-  using ::std::vector;
-  using ::std::cout;
-  using ::std::cin;
-  using ::std::endl;
-  using ::std::cerr;
-  using ::std::istringstream;
-  using ::std::getline;
+void repl(const string filename) {
 
     ToyFS *fs = new ToyFS(filename, DISKSIZE, BLOCKSIZE);
 
@@ -83,7 +84,7 @@ void repl(const std::string filename) {
         } else if (args[0] == "exit") {
             break;
         } else {
-            std::cout << "unknown command: " << args[0] << std::endl;
+            cout << "unknown command: " << args[0] << endl;
         }
         cout << PRMPT;
     }
@@ -94,14 +95,14 @@ void repl(const std::string filename) {
 
 int main(int argc, char **argv) {
     if (argc != 2) {
-        std::cerr << "usage: " << argv[0] << " filename" << std::endl;
+        cerr << "usage: " << argv[0] << " filename" << endl;
         return 1;
     }
 
 #ifdef DEBUG
-    test_fs(std::string(argv[1]));
+    test_fs(string(argv[1]));
 #else
-    repl(std::string(argv[1]));
+    repl(string(argv[1]));
 #endif
     return 0;
 }

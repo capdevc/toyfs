@@ -19,7 +19,7 @@ class ToyFS {
   const uint num_blocks;
 
   // DirEntry root;
-  std::list<DirEntry> root_dir;
+  std::shared_ptr<DirEntry> root_dir;
   std::list<FreeNode>free_nodes;
 
   void init_disk(const std::string& filename);

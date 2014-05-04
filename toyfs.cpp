@@ -4,15 +4,22 @@
 #include <string>
 #include <vector>
 
+using std::cerr;
+using std::endl;
+using std::fstream;
+using std::make_shared;
+using std::string;
+using std::vector;
+
 #define ops_at_least(x)                                         \
   if (static_cast<int>(args.size()) < x+1) {                    \
-    std::cerr << args[0] << ": missing operand" << std::endl;   \
+    cerr << args[0] << ": missing operand" << endl;             \
     return;                                                     \
   }
 
 #define ops_less_than(x)                                        \
   if (static_cast<int>(args.size()) > x+1) {                    \
-    std::cerr << args[0] << ": too many operands" << std::endl; \
+    cerr << args[0] << ": too many operands" << endl;           \
     return;                                                     \
   }
 
@@ -21,14 +28,15 @@
   ops_less_than(x);
 
 
-ToyFS::ToyFS(const std::string& filename,
+ToyFS::ToyFS(const string& filename,
              const uint         fs_size,
              const uint         block_size)
     : filename(filename),
       fs_size(fs_size),
       block_size(block_size),
-      num_blocks(std::ceil(fs_size / block_size)) {
+      num_blocks(ceil(fs_size / block_size)) {
 
+  root_dir = make_shared<DirEntry>(DirEntry("root", root_dir));
   init_disk(filename);
   free_nodes.emplace_back(num_blocks, 0);
 }
@@ -38,85 +46,85 @@ ToyFS::~ToyFS() {
   remove(filename.c_str());
 }
 
-void ToyFS::init_disk(const std::string& filename) {
-  const std::vector<char>zeroes(num_blocks, 0);
+void ToyFS::init_disk(const string& filename) {
+  const vector<char>zeroes(num_blocks, 0);
 
   disk_file.open(filename,
-                 std::fstream::in |
-                 std::fstream::out |
-                 std::fstream::binary |
-                 std::fstream::trunc);
+                 fstream::in |
+                 fstream::out |
+                 fstream::binary |
+                 fstream::trunc);
 
   for (uint i = 0; i < num_blocks; ++i) {
     disk_file.write(zeroes.data(), block_size);
   }
 }
 
-void ToyFS::open(std::vector<std::string> args) {
+void ToyFS::open(vector<string> args) {
   ops_exactly(2);
 }
 
-void ToyFS::read(std::vector<std::string> args) {
+void ToyFS::read(vector<string> args) {
   ops_exactly(2);
 }
 
-void ToyFS::write(std::vector<std::string> args) {
+void ToyFS::write(vector<string> args) {
   ops_exactly(2);
 }
 
-void ToyFS::seek(std::vector<std::string> args) {
+void ToyFS::seek(vector<string> args) {
   ops_exactly(2);
 }
 
-void ToyFS::close(std::vector<std::string> args) {
+void ToyFS::close(vector<string> args) {
   ops_exactly(1);
 }
 
-void ToyFS::mkdir(std::vector<std::string> args) {
+void ToyFS::mkdir(vector<string> args) {
   ops_at_least(1);
 }
 
-void ToyFS::rmdir(std::vector<std::string> args) {
+void ToyFS::rmdir(vector<string> args) {
   ops_at_least(1);
 }
 
-void ToyFS::cd(std::vector<std::string> args) {
+void ToyFS::cd(vector<string> args) {
   ops_exactly(1);
 }
 
 
-void ToyFS::link(std::vector<std::string> args) {
+void ToyFS::link(vector<string> args) {
   ops_exactly(2);
 }
 
-void ToyFS::unlink(std::vector<std::string> args) {
+void ToyFS::unlink(vector<string> args) {
   ops_exactly(1);
 }
 
-void ToyFS::stat(std::vector<std::string> args) {
+void ToyFS::stat(vector<string> args) {
   ops_at_least(1);
 }
 
-void ToyFS::ls(std::vector<std::string> args) {
+void ToyFS::ls(vector<string> args) {
   ops_exactly(0);
 }
 
-void ToyFS::cat(std::vector<std::string> args) {
+void ToyFS::cat(vector<string> args) {
   ops_at_least(1);
 }
 
-void ToyFS::cp(std::vector<std::string> args) {
+void ToyFS::cp(vector<string> args) {
   ops_exactly(2);
 }
 
-void ToyFS::tree(std::vector<std::string> args) {
+void ToyFS::tree(vector<string> args) {
   ops_exactly(0);
 }
 
-void ToyFS::import(std::vector<std::string> args) {
+void ToyFS::import(vector<string> args) {
   ops_exactly(2);
 }
 
-void ToyFS::FS_export(std::vector<std::string> args) {
+void ToyFS::FS_export(vector<string> args) {
   ops_exactly(2);
 }
