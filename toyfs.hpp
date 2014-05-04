@@ -3,15 +3,21 @@
 
 #include <fstream>
 #include <list>
+#include <map>
 #include <string>
 #include <vector>
 #include "inode.hpp"
 #include "direntry.hpp"
 #include "freenode.hpp"
 
-enum Mode { r, w, rw };
 
 class ToyFS {
+  struct Descriptor {
+    uint mode;
+    uint block_pos;
+    std::weak_ptr<Inode> inode;
+  };
+
   const std::string filename;
   std::fstream disk_file;
   const uint fs_size;
@@ -22,6 +28,8 @@ class ToyFS {
   std::shared_ptr<DirEntry> root_dir;
   std::shared_ptr<DirEntry> pwd;
   std::list<FreeNode>free_list;
+  std::map<uint, Descriptor> open_files;
+  uint next_descriptor = 0;
 
   void init_disk(const std::string& filename);
   std::shared_ptr<DirEntry> find_file(const std::shared_ptr<DirEntry> &start,
