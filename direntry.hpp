@@ -16,9 +16,9 @@ class DirEntry {
   std::shared_ptr<Inode>inode;
   std::list<std::shared_ptr<DirEntry>> subdirs;
   DirEntry(const std::string name,
-           const DirEntry &parent);
+           const std::shared_ptr<DirEntry> parent);
   DirEntry(const std::string name,
-           const DirEntry &parent,
+           const std::shared_ptr<DirEntry> parent,
            const std::shared_ptr<Inode> & inode);
 
   // move creation out to toyfs
