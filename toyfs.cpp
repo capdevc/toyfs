@@ -144,7 +144,7 @@ void ToyFS::mkdir(vector<string> args) {
 
       /* check that this directory doesn't exist */
       bool not_new = false;
-      for(auto dir : where->subdirs) {
+      for(auto dir : where->contents) {
           if(dir->name == new_dir_name) {
               cerr << new_dir_name << " already exists" << endl;
               not_new = true;
@@ -188,7 +188,13 @@ void ToyFS::cd(vector<string> args) {
   }
   
   if(where != nullptr) {
-      pwd = where;
+      for(auto dir : where->contents) {
+          if(dir->name == chg_dir_name) {
+              pwd = dir;
+              return;
+          }
+      }
+      cerr << chg_dir_name << " not found" << endl; 
   } else {
       cerr << "Invalid path" << endl;
   }
