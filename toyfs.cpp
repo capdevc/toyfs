@@ -160,6 +160,9 @@ void ToyFS::stat(vector<string> args) {
 
 void ToyFS::ls(vector<string> args) {
   ops_exactly(0);
+  for(auto dir : pwd->subdirs) {
+    cout << dir->name << endl;
+  }
 }
 
 void ToyFS::cat(vector<string> args) {
