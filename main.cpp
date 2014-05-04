@@ -28,14 +28,18 @@ int test_fs(const string filename) {
   vector<string> args4 = {"mkdir", "dir-2/dir-b"};
   vector<string> args5 = {"mkdir", "dir-2/dir-b/dir-deep"};
   vector<string> args6 = {"open", "somefile", "3"};
-  vector<string> args7 = {"ls"};
+  vector<string> args7 = {"open", "somefile", "1"};
+  vector<string> args8 = {"ls"};
   myfs.mkdir(args1);
   myfs.mkdir(args2);
   myfs.mkdir(args3);
   myfs.mkdir(args4);
   myfs.mkdir(args5);
+  cout << "Opening a new file" << endl;
   myfs.open(args6);
-  myfs.ls(args7);
+  cout << "Opening an existing file" << endl;
+  myfs.open(args7);
+  myfs.ls(args8);
 
   return 0;
 }
