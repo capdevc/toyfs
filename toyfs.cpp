@@ -214,9 +214,15 @@ void ToyFS::cd(vector<string> args) {
     path_tokens.pop_back();
     where = find_file(where, path_tokens);
   }
-
-  if (where != nullptr) {
-    pwd = where;
+  
+  if(where != nullptr) {
+      for(auto dir : where->contents) {
+          if(dir->name == chg_dir_name) {
+              pwd = dir;
+              return;
+          }
+      }
+      cerr << chg_dir_name << " not found" << endl; 
   } else {
     cerr << "Invalid path" << endl;
   }
