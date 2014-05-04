@@ -57,7 +57,7 @@ ToyFS::ToyFS(const string& filename,
   // start at root dir;
   pwd = root_dir;
   init_disk(filename);
-  free_nodes.emplace_back(num_blocks, 0);
+  free_list.emplace_back(num_blocks, 0);
 }
 
 ToyFS::~ToyFS() {
@@ -209,7 +209,7 @@ void ToyFS::stat(vector<string> args) {
 
 void ToyFS::ls(vector<string> args) {
   ops_exactly(0);
-  for(auto dir : pwd->subdirs) {
+  for(auto dir : pwd->contents) {
     cout << dir->name << endl;
   }
 }

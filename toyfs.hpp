@@ -21,7 +21,7 @@ class ToyFS {
   // DirEntry root;
   std::shared_ptr<DirEntry> root_dir;
   std::shared_ptr<DirEntry> pwd;
-  std::list<FreeNode>free_nodes;
+  std::list<FreeNode>free_list;
 
   void init_disk(const std::string& filename);
   std::shared_ptr<DirEntry> find_file(const std::shared_ptr<DirEntry> &start,
