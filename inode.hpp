@@ -8,9 +8,11 @@
 class Inode {
  public:
   uint size;
-  uint block_size;
+  uint blocks_used;
   std::vector<uint>d_blocks;
   std::unique_ptr<std::vector<std::vector<uint>>> i_blocks;
+
+  Inode();
 };
 
 #endif /* _INODE_H_ */
