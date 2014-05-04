@@ -5,7 +5,7 @@ CFLAGS = --std=c++11 -Wall -Wextra -g -DDEBUG
 default: main
 
 main: main.cpp toyfs.o direntry.o
-	$(CXX) $(CFLAGS) -o main main.cpp toyfs.o direntry.o
+	$(CXX) $(CFLAGS) -o main main.cpp direntry.o toyfs.o
 
 toyfs.o: toyfs.cpp toyfs.hpp
 	$(CXX) $(CFLAGS) -c toyfs.cpp

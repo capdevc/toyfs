@@ -81,8 +81,8 @@ void ToyFS::init_disk(const string& filename) {
 
 // walk the dir tree from start, returning a pointer to the file
 // or directory specified in path_str
-shared_ptr<DirEntry> find_file(const shared_ptr<DirEntry> &start,
-                               const vector<string> &path_tokens) {
+shared_ptr<DirEntry> ToyFS::find_file(const shared_ptr<DirEntry> &start,
+                                      const vector<string> &path_tokens) {
   auto entry = start;
   for (auto &tok : path_tokens) {
     entry = entry->find_child(tok);
@@ -116,22 +116,25 @@ void ToyFS::close(vector<string> args) {
 void ToyFS::mkdir(vector<string> args) {
   ops_at_least(1);
   // just to see
-  cout << args[1];
-  auto path_tokens = parse_path(args[1]);
-  auto new_dir_name = path_tokens.back();
+  cout << "args: " << args[1] << endl;
   auto where = pwd;
   if (args[1][0] == '/') {
+    args[1].erase(0,1);
     where = root_dir;
   }
+  auto path_tokens = parse_path(args[1]);
+  auto new_dir_name = path_tokens.back();
   if (path_tokens.size() >= 2) {
     path_tokens.pop_back();
     where = find_file(where, path_tokens);
   }
   if (where == nullptr) {
-    cerr << "Invalid path or something like that";
+    cerr << "Invalid path or something like that" << endl;
     return;
   }
   where->add_dir(new_dir_name);
+  cout << "adding " << new_dir_name << " in: " << where->name << endl;
+  cout << "---" << endl;
 }
 
 void ToyFS::rmdir(vector<string> args) {
