@@ -101,6 +101,8 @@ void repl(const string filename) {
             fs->FS_export(args);
         } else if (args[0] == "exit") {
             break;
+        } else if (args[0] == "pwd") {
+            fs->printwd(args);
         } else {
             cout << "unknown command: " << args[0] << endl;
         }
