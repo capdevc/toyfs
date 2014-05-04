@@ -17,16 +17,16 @@ using std::string;
 using std::vector;
 using std::weak_ptr;
 
-#define ops_at_least(x)                                         \
-  if (static_cast<int>(args.size()) < x+1) {                    \
-    cerr << args[0] << ": missing operand" << endl;             \
-    return;                                                     \
+#define ops_at_least(x)                                 \
+  if (static_cast<int>(args.size()) < x+1) {            \
+    cerr << args[0] << ": missing operand" << endl;     \
+    return;                                             \
   }
 
-#define ops_less_than(x)                                        \
-  if (static_cast<int>(args.size()) > x+1) {                    \
-    cerr << args[0] << ": too many operands" << endl;           \
-    return;                                                     \
+#define ops_less_than(x)                                \
+  if (static_cast<int>(args.size()) > x+1) {            \
+    cerr << args[0] << ": too many operands" << endl;   \
+    return;                                             \
   }
 
 #define ops_exactly(x)                          \
@@ -136,56 +136,51 @@ void ToyFS::close(vector<string> args) {
 
 void ToyFS::mkdir(vector<string> args) {
   ops_at_least(1);
-  // just to see
-#ifdef DEBUG
-  cout << "args: " << args[1] << endl;
-#endif
-
   /* add each new directory one at a time */
-  for(uint i = 1; i < args.size(); i++) {
-      auto where = pwd;
-      
-      /* remove initial '/' */
-      if (args[i][0] == '/') {
-        args[i].erase(0,1);
-        where = root_dir;
-      }
-      
-      /* figure out new name and path */
-      auto path_tokens = parse_path(args[i]);
-      auto new_dir_name = path_tokens.back();
-      if (path_tokens.size() >= 2) {
-        path_tokens.pop_back();
-        where = find_file(where, path_tokens);
-      }
-      if (where == nullptr) {
-        cerr << "Invalid path or something like that" << endl;
-        return;
-      }
+  for (uint i = 1; i < args.size(); i++) {
+    auto where = pwd;
 
-      /* check that this directory doesn't exist */
-      bool not_new = false;
-      for(auto dir : where->subdirs) {
-          if(dir->name == new_dir_name) {
-              cerr << new_dir_name << " already exists" << endl;
-              not_new = true;
-              break;
-          }
-      }
-      if(not_new) { continue; }
-
-      /* actually add the directory */
-      where->add_dir(new_dir_name);
-#ifdef DEBUG
-      cout << "adding " << new_dir_name << " in: " << where->name << endl;
-      cout << "---" << endl;
-#endif
+    /* remove initial '/' */
+    if (args[i][0] == '/') {
+      args[i].erase(0,1);
+      where = root_dir;
     }
+
+    /* figure out new name and path */
+    auto path_tokens = parse_path(args[i]);
+    auto new_dir_name = path_tokens.back();
+    if (path_tokens.size() >= 2) {
+      path_tokens.pop_back();
+      where = find_file(where, path_tokens);
+    }
+    if (where == nullptr) {
+      cerr << "Invalid path or something like that" << endl;
+      return;
+    }
+
+    /* check that this directory doesn't exist */
+    bool not_new = false;
+    for (auto dir : where->contents) {
+      if (dir->name == new_dir_name) {
+        cerr << new_dir_name << " already exists" << endl;
+        not_new = true;
+        break;
+      }
+    }
+    if (not_new) { continue; }
+
+    /* actually add the directory */
+    where->add_dir(new_dir_name);
+#ifdef DEBUG
+    cout << "adding " << new_dir_name << " in: " << where->name << endl;
+    cout << "---" << endl;
+#endif
+  }
 }
 
 void ToyFS::printwd(vector<string> args) {
-    ops_exactly(0);
-    cout << pwd->name << endl;
+  ops_exactly(0);
+  cout << pwd->name << endl;
 }
 
 void ToyFS::rmdir(vector<string> args) {
@@ -197,21 +192,21 @@ void ToyFS::cd(vector<string> args) {
   ops_exactly(1);
 
   auto where = pwd;
-  if(args[1][0] == '/') {
-      args[1].erase(0,1);
-      where = root_dir;
+  if (args[1][0] == '/') {
+    args[1].erase(0,1);
+    where = root_dir;
   }
   auto path_tokens = parse_path(args[1]);
   auto chg_dir_name = path_tokens.back();
-  if(path_tokens.size() >= 2) {
-      path_tokens.pop_back();
-      where = find_file(where, path_tokens);
+  if (path_tokens.size() >= 2) {
+    path_tokens.pop_back();
+    where = find_file(where, path_tokens);
   }
-  
-  if(where != nullptr) {
-      pwd = where;
+
+  if (where != nullptr) {
+    pwd = where;
   } else {
-      cerr << "Invalid path" << endl;
+    cerr << "Invalid path" << endl;
   }
 }
 
