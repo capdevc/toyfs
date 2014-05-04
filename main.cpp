@@ -4,22 +4,36 @@
 #include <vector>
 #include "toyfs.hpp"
 
-using ::std::string;
-using ::std::vector;
-using ::std::cout;
-using ::std::cin;
-using ::std::endl;
-using ::std::cerr;
-using ::std::istringstream;
-using ::std::getline;
+using std::cerr;
+using std::cin;
+using std::cout;
+using std::endl;
+using std::getline;
+using std::istringstream;
+using std::make_shared;
+using std::shared_ptr;
+using std::string;
+using std::vector;
 
 const string PRMPT = "sh> ";
 const uint DISKSIZE = 102400;
 const uint BLOCKSIZE = 1024;
 
 int test_fs(const string filename) {
-    ToyFS(filename, DISKSIZE, BLOCKSIZE);
-    return 0;
+  ToyFS myfs(filename, DISKSIZE, BLOCKSIZE);
+
+  vector<string> args1 = {"mkdir /dir-1"};
+  vector<string> args2 = {"mkdir /dir-1/dir-b"};
+  vector<string> args3 = {"mkdir dir-2"};
+  vector<string> args4 = {"mkdir dir-2/dir-b"};
+  vector<string> args5 = {"mkdir dir-2/dir-b/dir-deep"};
+  myfs.mkdir(args1);
+  myfs.mkdir(args2);
+  myfs.mkdir(args3);
+  myfs.mkdir(args4);
+  myfs.mkdir(args5);
+
+  return 0;
 }
 
 void repl(const string filename) {
