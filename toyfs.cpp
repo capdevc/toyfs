@@ -148,6 +148,10 @@ void ToyFS::mkdir(vector<string> args) {
 
     /* figure out new name and path */
     auto path_tokens = parse_path(args[i]);
+    if(path_tokens.size() == 2) {
+        cerr << "cannot recreate root" << endl;
+        return;
+    }
     auto new_dir_name = path_tokens.back();
     if (path_tokens.size() >= 2) {
       path_tokens.pop_back();
@@ -197,6 +201,10 @@ void ToyFS::cd(vector<string> args) {
     where = root_dir;
   }
   auto path_tokens = parse_path(args[1]);
+  if(path_tokens.size() == 0) {
+    pwd = root_dir;
+    return;
+  }
   auto chg_dir_name = path_tokens.back();
   if (path_tokens.size() >= 2) {
     path_tokens.pop_back();
@@ -204,6 +212,10 @@ void ToyFS::cd(vector<string> args) {
   }
   
   if(where != nullptr) {
+      if(chg_dir_name == ".." || chg_dir_name == ".") {
+          pwd = where;
+          return;
+      }
       for(auto dir : where->contents) {
           if(dir->name == chg_dir_name) {
               pwd = dir;
