@@ -95,6 +95,27 @@ shared_ptr<DirEntry> ToyFS::find_file(const shared_ptr<DirEntry> &start,
 
 void ToyFS::open(vector<string> args) {
   ops_exactly(2);
+  uint mode;
+  istringstream(args[2]) >> mode;
+  auto where = pwd;
+  if (args[1][0] == '/') {
+    args[1].erase(0,1);
+    where = root_dir;
+  }
+  auto path_tokens = parse_path(args[1]);
+  auto new_file_name = path_tokens.back();
+  if (path_tokens.size() >= 2) {
+    path_tokens.pop_back();
+    where = find_file(where, path_tokens);
+  }
+  if (where == nullptr) {
+    cerr << "Invalid path or something like that" << endl;
+    return;
+  }
+  auto new_file = where->add_file(new_file_name);
+  uint fd = next_descriptor++;
+  open_files[fd] = Descriptor{mode, 0, new_file->inode};
+  cout << fd << endl;
 }
 
 void ToyFS::read(vector<string> args) {
