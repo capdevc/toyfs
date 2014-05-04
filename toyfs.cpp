@@ -27,8 +27,7 @@ ToyFS::ToyFS(const std::string& filename,
     : filename(filename),
       fs_size(fs_size),
       block_size(block_size),
-      num_blocks(std::ceil(fs_size / block_size)),
-      root_dir("root", std::make_shared<DirEntry>(root_dir)) {
+      num_blocks(std::ceil(fs_size / block_size)) {
 
   init_disk(filename);
   free_nodes.emplace_back(num_blocks, 0);

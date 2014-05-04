@@ -1,6 +1,7 @@
-#include <string>
 #include <iostream>
+#include <string>
 #include <sstream>
+#include <vector>
 #include "toyfs.hpp"
 
 #define PRMPT "sh> "
@@ -13,66 +14,73 @@ int test_fs(const std::string filename) {
 }
 
 void repl(const std::string filename) {
-    using namespace std;
-    
+  using ::std::string;
+  using ::std::vector;
+  using ::std::cout;
+  using ::std::cin;
+  using ::std::endl;
+  using ::std::cerr;
+  using ::std::istringstream;
+  using ::std::getline;
+
     ToyFS *fs = new ToyFS(filename, DISKSIZE, BLOCKSIZE);
 
     string cmd;
     vector<string> args;
     string token;
-    
+
     cout << PRMPT;
-    while(getline(cin, cmd)) {
+    while (getline(cin, cmd)) {
         args.clear();
         istringstream iss(cmd);
         while (iss >> token) { args.push_back(token); }
-        if(args.size() == 0) {
+        if (args.size() == 0) {
             cout << PRMPT;
             continue;
         }
 
-        if(args[0] == "mkfs") {
-            if(args.size() == 1) {
+        if (args[0] == "mkfs") {
+            if (args.size() == 1) {
                 delete(fs);
                 fs = new ToyFS(filename, DISKSIZE, BLOCKSIZE);
             } else {
                 cerr << "mkfs: too many operands" << endl;
             }
-        } else if(args[0] == "open") {
+        } else if (args[0] == "open") {
             fs->open(args);
-        } else if(args[0] == "read") {
+        } else if (args[0] == "read") {
             fs->close(args);
-        } else if(args[0] == "write") {
+        } else if (args[0] == "write") {
             fs->write(args);
-        } else if(args[0] == "seek") {
+        } else if (args[0] == "seek") {
             fs->seek(args);
-        } else if(args[0] == "close") {
+        } else if (args[0] == "close") {
             fs->close(args);
-        } else if(args[0] == "mkdir") {
+        } else if (args[0] == "mkdir") {
             fs->mkdir(args);
-        } else if(args[0] == "rmdir") {
+        } else if (args[0] == "rmdir") {
             fs->rmdir(args);
-        } else if(args[0] == "cd") {
+        } else if (args[0] == "cd") {
             fs->cd(args);
-        } else if(args[0] == "link") {
+        } else if (args[0] == "link") {
             fs->link(args);
-        } else if(args[0] == "unlink") {
+        } else if (args[0] == "unlink") {
             fs->unlink(args);
-        } else if(args[0] == "stat") {
+        } else if (args[0] == "stat") {
             fs->stat(args);
-        } else if(args[0] == "ls") {
+        } else if (args[0] == "ls") {
             fs->ls(args);
-        } else if(args[0] == "cat") {
+        } else if (args[0] == "cat") {
             fs->cat(args);
-        } else if(args[0] == "cp") {
+        } else if (args[0] == "cp") {
             fs->cp(args);
-        } else if(args[0] == "tree") {
+        } else if (args[0] == "tree") {
             fs->tree(args);
-        } else if(args[0] == "import") {
+        } else if (args[0] == "import") {
             fs->import(args);
-        } else if(args[0] == "export") {
+        } else if (args[0] == "export") {
             fs->FS_export(args);
-        } else if(args[0] == "exit") {
+        } else if (args[0] == "exit") {
             break;
         } else {
             std::cout << "unknown command: " << args[0] << std::endl;
@@ -85,7 +93,7 @@ void repl(const std::string filename) {
 }
 
 int main(int argc, char **argv) {
-    if(argc != 2) {
+    if (argc != 2) {
         std::cerr << "usage: " << argv[0] << " filename" << std::endl;
         return 1;
     }
