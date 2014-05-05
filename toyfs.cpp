@@ -106,6 +106,11 @@ void ToyFS::open(vector<string> args) {
   }
 
   auto path_tokens = parse_path(args[1]);
+  if(path_tokens.size() == 0) {
+      cerr << "cannot open root" << endl;
+      return;
+  }
+
   auto file_name = path_tokens.back();
 
   // walk the input until we have the right dir
@@ -145,7 +150,7 @@ void ToyFS::read(vector<string> args) {
 }
 
 void ToyFS::write(vector<string> args) {
-  ops_exactly(2);
+  ops_at_least(2);
 }
 
 void ToyFS::seek(vector<string> args) {
