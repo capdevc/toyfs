@@ -13,9 +13,11 @@ enum EntryType { file, dir };
 class DirEntry: public std::enable_shared_from_this<DirEntry> {
   DirEntry();
  public:
-  static std::shared_ptr<DirEntry> mk_DirEntry(const std::string name,
-                                               const std::shared_ptr<DirEntry> parent,
-                                               const std::shared_ptr<Inode> &inode=nullptr);
+  static std::shared_ptr<DirEntry> make_de_dir(const std::string name,
+                                               const std::shared_ptr<DirEntry> parent);
+  static std::shared_ptr<DirEntry> make_de_file(const std::string name,
+                                                const std::shared_ptr<DirEntry> parent,
+                                                const std::shared_ptr<Inode> &inode=nullptr);
   uint block_size;
   EntryType type;
   std::string name;

@@ -57,8 +57,7 @@ ToyFS::ToyFS(const string& filename,
       block_size(block_size),
       num_blocks(ceil(fs_size / block_size)) {
 
-  root_dir = DirEntry::mk_DirEntry("root", nullptr);
-  root_dir->type = dir;
+  root_dir = DirEntry::make_de_dir("root", nullptr);
   // start at root dir;
   pwd = root_dir;
   init_disk(filename);
@@ -276,7 +275,7 @@ void ToyFS::cd(vector<string> args) {
   if (where == nullptr) {
     cerr << "cd: error: invalid path: " << args[1] << endl;
   } else if (where->type != dir) {
-    cerr << "cd: error: " << args[1] << " must be a directory" << endl; 
+    cerr << "cd: error: " << args[1] << " must be a directory" << endl;
   } else {
     pwd = where;
   }
@@ -299,7 +298,7 @@ void ToyFS::link(vector<string> args) {
 
   /* get src file */
   auto path_tokens = parse_path(args[1]);
-  auto src_file = find_file(src, path_tokens); 
+  auto src_file = find_file(src, path_tokens);
 
   /* get dest path */
   path_tokens = parse_path(args[2]);
@@ -323,8 +322,7 @@ void ToyFS::link(vector<string> args) {
   } else if (src_file->parent.lock() == dest) {
     cerr << "link: error: src and dest must be in different directories\n";
   } else {
-    auto new_file = dest->mk_DirEntry(dest_file_name, dest, src_file->inode);
-    new_file->type = file;
+    auto new_file = DirEntry::make_de_file(dest_file_name, dest, src_file->inode);
     dest->contents.push_back(new_file);
   }
 }
@@ -340,8 +338,8 @@ void ToyFS::unlink(vector<string> args) {
 
   auto path_tokens = parse_path(args[1]);
   linked = find_file(linked, path_tokens);
-  
-  if(linked == nullptr) {
+
+ if(linked == nullptr) {
     cerr << "unlink: error: file not found" << endl;
   } else if(linked->type != file) {
     cerr << "unlink: error: " << args[1] << " must be a file" << endl;
@@ -359,10 +357,10 @@ void ToyFS::stat(vector<string> args) {
     args[1].erase(0,1);
     filepath = root_dir;
   }
-  
+
   auto path_tokens = parse_path(args[1]);
-  filepath = find_file(filepath, path_tokens); 
-  
+  filepath = find_file(filepath, path_tokens);
+
   if (filepath == nullptr) {
     cerr << "stat: error: " << args[1] << " not found" << endl;
   } else {
