@@ -1,6 +1,7 @@
 #include "toyfs.hpp"
 #include <cmath>
 #include <iostream>
+#include <iomanip>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -18,6 +19,7 @@ using std::string;
 using std::vector;
 using std::weak_ptr;
 using std::deque;
+using std::setw;
 
 #define ops_at_least(x)                                 \
   if (static_cast<int>(args.size()) < x+1) {            \
@@ -280,7 +282,6 @@ void ToyFS::cd(vector<string> args) {
   }
 }
 
-
 void ToyFS::link(vector<string> args) {
   ops_exactly(2);
 
@@ -393,8 +394,28 @@ void ToyFS::cp(vector<string> args) {
   ops_exactly(2);
 }
 
+void tree_helper(shared_ptr<DirEntry> directory, string indent) {
+  auto cont = directory->contents;
+  cout << directory->name << endl;
+  if (cont.size() == 0) return;
+
+  if (cont.size() >= 2) {
+    auto last = *(cont.rbegin());
+    for(auto entry = cont.begin(); *entry != last; entry++) {
+      cout << indent << "├───";
+      auto new_indent = "│   " + indent;
+      tree_helper(*entry, new_indent);
+    }
+  }
+  
+  cout << indent + "└───";
+  tree_helper(*(cont.rbegin()), indent + "    ");
+}
+
 void ToyFS::tree(vector<string> args) {
   ops_exactly(0);
+
+  tree_helper(pwd, "");
 }
 
 void ToyFS::import(vector<string> args) {
