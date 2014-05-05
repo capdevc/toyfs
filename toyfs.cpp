@@ -205,27 +205,30 @@ void ToyFS::mkdir(vector<string> args) {
 
 void ToyFS::rmdir(vector<string> args) {
   ops_at_least(1);
-  auto where = pwd;
+
+  auto rm_dir = pwd;
   if (args[1][0] == '/') {
     args[1].erase(0,1);
-    where = root_dir;
-  }
-  auto path_tokens = parse_path(args[1]);
-  if(path_tokens.size() == 0) {
-    cerr << "cannot remove root" << endl;
-    return;
+    rm_dir = root_dir;
   }
   
-  auto rm_dir_name = path_tokens.back();
-  if (path_tokens.size() >= 2) {
-    path_tokens.pop_back();
-    where = find_file(where, path_tokens);
-  }
+  auto path_tokens = parse_path(args[1]);
+  rm_dir = find_file(rm_dir, path_tokens);
 
-  if(where != nullptr) {
-  } else {
-    cerr << "Invalid path" << endl;
-  }
+    if(rm_dir == nullptr) {
+        cerr << "Invalid path" << endl;
+    } else if(rm_dir == root_dir) {
+        cerr << "rmdir: error: cannot remove root" << endl;
+    } else if(rm_dir == pwd) {
+        cerr << "rmdir: error: cannot remove working directory" << endl;
+    } else if(rm_dir->contents.size() > 0) {
+        cerr << "rmdir: error: directory not empty" << endl;
+    } else if(rm_dir->type != dir) {
+        cerr << "rmdir: error: " << rm_dir->name << " must be directory\n";
+    } else {
+        auto parent = rm_dir->parent.lock();
+        parent->contents.remove(rm_dir);
+    }
 }
 
 void ToyFS::printwd(vector<string> args) {
