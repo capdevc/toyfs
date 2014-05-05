@@ -188,15 +188,11 @@ void ToyFS::mkdir(vector<string> args) {
     }
 
     /* check that this directory doesn't exist */
-    bool not_new = false;
-    for (auto dir : where->contents) {
-      if (dir->name == new_dir_name) {
+    auto file = find_file(where, vector<string>{new_dir_name});
+    if (file != nullptr) {
         cerr << new_dir_name << " already exists" << endl;
-        not_new = true;
-        break;
-      }
+        continue;
     }
-    if (not_new) { continue; }
 
     /* actually add the directory */
     where->add_dir(new_dir_name);
@@ -204,6 +200,31 @@ void ToyFS::mkdir(vector<string> args) {
     cout << "adding " << new_dir_name << " in: " << where->name << endl;
     cout << "---" << endl;
 #endif
+  }
+}
+
+void ToyFS::rmdir(vector<string> args) {
+  ops_at_least(1);
+  auto where = pwd;
+  if (args[1][0] == '/') {
+    args[1].erase(0,1);
+    where = root_dir;
+  }
+  auto path_tokens = parse_path(args[1]);
+  if(path_tokens.size() == 0) {
+    cerr << "cannot remove root" << endl;
+    return;
+  }
+  
+  auto rm_dir_name = path_tokens.back();
+  if (path_tokens.size() >= 2) {
+    path_tokens.pop_back();
+    where = find_file(where, path_tokens);
+  }
+
+  if(where != nullptr) {
+  } else {
+    cerr << "Invalid path" << endl;
   }
 }
 
@@ -222,16 +243,10 @@ void ToyFS::printwd(vector<string> args) {
     wd = wd->parent.lock();
   }
 
-  cout << "/";
   for(auto dirname : plist) {
-      cout << dirname << "/";
+      cout << "/" << dirname;
   }
   cout << endl;
-}
-
-void ToyFS::rmdir(vector<string> args) {
-  ops_at_least(1);
-  auto where = pwd;
 }
 
 void ToyFS::cd(vector<string> args) {
@@ -242,29 +257,12 @@ void ToyFS::cd(vector<string> args) {
     args[1].erase(0,1);
     where = root_dir;
   }
+
   auto path_tokens = parse_path(args[1]);
-  if(path_tokens.size() == 0) {
-    pwd = root_dir;
-    return;
-  }
-  auto chg_dir_name = path_tokens.back();
-  if (path_tokens.size() >= 2) {
-    path_tokens.pop_back();
-    where = find_file(where, path_tokens);
-  }
+  where = find_file(where, path_tokens);
   
   if(where != nullptr) {
-      if(chg_dir_name == ".." || chg_dir_name == ".") {
-          pwd = where;
-          return;
-      }
-      for(auto dir : where->contents) {
-          if(dir->name == chg_dir_name) {
-              pwd = dir;
-              return;
-          }
-      }
-      cerr << chg_dir_name << " not found" << endl; 
+    pwd = where;
   } else {
     cerr << "Invalid path" << endl;
   }
