@@ -403,12 +403,11 @@ void tree_helper(shared_ptr<DirEntry> directory, string indent) {
     auto last = *(cont.rbegin());
     for(auto entry = cont.begin(); *entry != last; entry++) {
       cout << indent << "├───";
-      auto new_indent = "│   " + indent;
-      tree_helper(*entry, new_indent);
+      tree_helper(*entry, indent + "│   ");
     }
   }
   
-  cout << indent + "└───";
+  cout << indent << "└───";
   tree_helper(*(cont.rbegin()), indent + "    ");
 }
 
