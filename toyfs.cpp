@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <deque>
 
 using std::cerr;
 using std::cout;
@@ -16,6 +17,7 @@ using std::shared_ptr;
 using std::string;
 using std::vector;
 using std::weak_ptr;
+using std::deque;
 
 #define ops_at_least(x)                                 \
   if (static_cast<int>(args.size()) < x+1) {            \
@@ -171,7 +173,7 @@ void ToyFS::mkdir(vector<string> args) {
 
     /* figure out new name and path */
     auto path_tokens = parse_path(args[i]);
-    if(path_tokens.size() == 2) {
+    if(path_tokens.size() == 0) {
         cerr << "cannot recreate root" << endl;
         return;
     }
@@ -207,7 +209,24 @@ void ToyFS::mkdir(vector<string> args) {
 
 void ToyFS::printwd(vector<string> args) {
   ops_exactly(0);
-  cout << pwd->name << endl;
+
+  if(pwd == root_dir) {
+      cout << "/" << endl;
+      return;
+  }
+  
+  auto wd = pwd;
+  deque<string> plist;
+  while(wd != root_dir) {
+    plist.push_front(wd->name);
+    wd = wd->parent.lock();
+  }
+
+  cout << "/";
+  for(auto dirname : plist) {
+      cout << dirname << "/";
+  }
+  cout << endl;
 }
 
 void ToyFS::rmdir(vector<string> args) {
