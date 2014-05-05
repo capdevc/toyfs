@@ -18,6 +18,13 @@ class ToyFS {
     std::weak_ptr<Inode> inode;
   };
 
+  struct PathRet {
+    bool invalid_path = false;
+    std::string final_name;
+    std::shared_ptr<DirEntry> parent_node;
+    std::shared_ptr<DirEntry> final_node;
+  };
+
   const std::string filename;
   std::fstream disk_file;
   const uint fs_size;
@@ -32,8 +39,7 @@ class ToyFS {
   uint next_descriptor = 0;
 
   void init_disk(const std::string& filename);
-  std::shared_ptr<DirEntry> find_file(const std::shared_ptr<DirEntry> &start,
-                                      const std::vector<std::string> &path_tokens);
+  std::unique_ptr<PathRet> parse_path(std::string path_str) const;
 
  public:
   ToyFS(const std::string& filename, const uint fs_size, const uint block_size);
