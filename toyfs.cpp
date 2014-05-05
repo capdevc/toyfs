@@ -216,20 +216,20 @@ void ToyFS::rmdir(vector<string> args) {
   auto path_tokens = parse_path(args[1]);
   rm_dir = find_file(rm_dir, path_tokens);
 
-    if (rm_dir == nullptr) {
-        cerr << "Invalid path" << endl;
-    } else if (rm_dir == root_dir) {
-        cerr << "rmdir: error: cannot remove root" << endl;
-    } else if (rm_dir == pwd) {
-        cerr << "rmdir: error: cannot remove working directory" << endl;
-    } else if (rm_dir->contents.size() > 0) {
-        cerr << "rmdir: error: directory not empty" << endl;
-    } else if (rm_dir->type != dir) {
-        cerr << "rmdir: error: " << rm_dir->name << " must be directory\n";
-    } else {
-        auto parent = rm_dir->parent.lock();
-        parent->contents.remove(rm_dir);
-    }
+  if (rm_dir == nullptr) {
+    cerr << "Invalid path" << endl;
+  } else if (rm_dir == root_dir) {
+    cerr << "rmdir: error: cannot remove root" << endl;
+  } else if (rm_dir == pwd) {
+    cerr << "rmdir: error: cannot remove working directory" << endl;
+  } else if (rm_dir->contents.size() > 0) {
+    cerr << "rmdir: error: directory not empty" << endl;
+  } else if (rm_dir->type != dir) {
+    cerr << "rmdir: error: " << rm_dir->name << " must be directory\n";
+  } else {
+    auto parent = rm_dir->parent.lock();
+    parent->contents.remove(rm_dir);
+  }
 }
 
 void ToyFS::printwd(vector<string> args) {
@@ -280,6 +280,49 @@ void ToyFS::cd(vector<string> args) {
 
 void ToyFS::link(vector<string> args) {
   ops_exactly(2);
+
+  auto src = pwd;
+  auto dest = pwd;
+
+  if (args[1][0] == '/') {
+    args[1].erase(0,1);
+    src = root_dir;
+  }
+  if (args[2][0] == '/') {
+    args[2].erase(0,1);
+    dest = root_dir;
+  }
+
+  /* get src file */
+  auto path_tokens = parse_path(args[1]);
+  auto src_file = find_file(src, path_tokens); 
+
+  /* get dest path */
+  path_tokens = parse_path(args[2]);
+  if (path_tokens.size() == 0) {
+    /* dest is root */
+    cerr << "link: error: " << args[2] << " already exists" << endl;
+    return;
+  }
+  auto dest_file_name = path_tokens.back();
+  if (path_tokens.size() >= 2) {
+    path_tokens.pop_back();
+    dest = find_file(dest, path_tokens);
+  }
+
+  if (src_file == nullptr) {
+    cerr << "link: error: cannot find " << args[1] << endl;
+  } else if (find_file(dest,vector<string>{dest_file_name}) != nullptr) {
+    cerr << "link: error: " << args[2] << " already exists" << endl;
+  } else if (src_file->type != file) {
+    cerr << "link: error: " << args[1] << " must be a file" << endl;
+  } else if (src_file->parent.lock() == dest) {
+    cerr << "link: error: src and dest must be in different directories\n";
+  } else {
+    auto new_file = dest->mk_DirEntry(dest_file_name, dest, src_file->inode);
+    new_file->type = file;
+    dest->contents.push_back(new_file);
+  }
 }
 
 void ToyFS::unlink(vector<string> args) {
