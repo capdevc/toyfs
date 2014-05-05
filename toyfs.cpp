@@ -212,19 +212,19 @@ void ToyFS::rmdir(vector<string> args) {
     args[1].erase(0,1);
     rm_dir = root_dir;
   }
-  
+
   auto path_tokens = parse_path(args[1]);
   rm_dir = find_file(rm_dir, path_tokens);
 
-    if(rm_dir == nullptr) {
+    if (rm_dir == nullptr) {
         cerr << "Invalid path" << endl;
-    } else if(rm_dir == root_dir) {
+    } else if (rm_dir == root_dir) {
         cerr << "rmdir: error: cannot remove root" << endl;
-    } else if(rm_dir == pwd) {
+    } else if (rm_dir == pwd) {
         cerr << "rmdir: error: cannot remove working directory" << endl;
-    } else if(rm_dir->contents.size() > 0) {
+    } else if (rm_dir->contents.size() > 0) {
         cerr << "rmdir: error: directory not empty" << endl;
-    } else if(rm_dir->type != dir) {
+    } else if (rm_dir->type != dir) {
         cerr << "rmdir: error: " << rm_dir->name << " must be directory\n";
     } else {
         auto parent = rm_dir->parent.lock();
@@ -235,19 +235,19 @@ void ToyFS::rmdir(vector<string> args) {
 void ToyFS::printwd(vector<string> args) {
   ops_exactly(0);
 
-  if(pwd == root_dir) {
+  if (pwd == root_dir) {
       cout << "/" << endl;
       return;
   }
 
   auto wd = pwd;
   deque<string> plist;
-  while(wd != root_dir) {
+  while (wd != root_dir) {
     plist.push_front(wd->name);
     wd = wd->parent.lock();
   }
 
-  for(auto dirname : plist) {
+  for (auto dirname : plist) {
       cout << "/" << dirname;
   }
   cout << endl;
