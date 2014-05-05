@@ -49,12 +49,14 @@ shared_ptr<DirEntry> DirEntry::find_child(const string name) const {
 
 shared_ptr<DirEntry> DirEntry::add_dir(const string name) {
   auto new_dir = mk_DirEntry(name, self.lock());
+  new_dir->type = dir;
   contents.push_back(new_dir);
   return new_dir;
 }
 
 shared_ptr<DirEntry> DirEntry::add_file(const string name) {
   auto new_file = mk_DirEntry(name, self.lock(), make_shared<Inode>());
+  new_file->type = file;
   contents.push_back(new_file);
   return new_file;
 }
