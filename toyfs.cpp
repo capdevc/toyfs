@@ -56,6 +56,7 @@ ToyFS::ToyFS(const string& filename,
       num_blocks(ceil(fs_size / block_size)) {
 
   root_dir = DirEntry::mk_DirEntry("root", nullptr);
+  root_dir->type = dir;
   // start at root dir;
   pwd = root_dir;
   init_disk(filename);
@@ -351,6 +352,30 @@ void ToyFS::unlink(vector<string> args) {
 
 void ToyFS::stat(vector<string> args) {
   ops_at_least(1);
+
+  auto filepath = pwd;
+  if (args[1][0] == '/') {
+    args[1].erase(0,1);
+    filepath = root_dir;
+  }
+  
+  auto path_tokens = parse_path(args[1]);
+  filepath = find_file(filepath, path_tokens); 
+  
+  if (filepath == nullptr) {
+    cerr << "stat: error: " << args[1] << " not found" << endl;
+  } else {
+    cout << "  File: " << filepath->name << endl;
+    if(filepath->type == file) {
+      cout << "  Type: file" << endl;
+      cout << " Inode: " << filepath->inode << endl;
+      cout << " Links: " << filepath->inode.use_count() << endl;
+      cout << "  Size: " << filepath->inode->size << endl;
+      cout << "Blocks: " << filepath->inode->blocks_used << endl;
+    } else if(filepath->type == dir) {
+      cout << "  Type: directory" << endl;
+    }
+  }
 }
 
 void ToyFS::ls(vector<string> args) {
