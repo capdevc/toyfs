@@ -271,10 +271,12 @@ void ToyFS::cd(vector<string> args) {
   where = find_file(where, path_tokens);
 
   if (where == nullptr) {
-    cerr << "Invalid path: " << args[1] << endl;
-    return;
+    cerr << "cd: error: invalid path: " << args[1] << endl;
+  } else if (where->type != dir) {
+    cerr << "cd: error: " << args[1] << " must be a directory" << endl; 
+  } else {
+    pwd = where;
   }
-  pwd = where;
 }
 
 
@@ -327,6 +329,24 @@ void ToyFS::link(vector<string> args) {
 
 void ToyFS::unlink(vector<string> args) {
   ops_exactly(1);
+
+  auto linked = pwd;
+  if (args[1][0] == '/') {
+    args[1].erase(0,1);
+    linked = root_dir;
+  }
+
+  auto path_tokens = parse_path(args[1]);
+  linked = find_file(linked, path_tokens);
+  
+  if(linked == nullptr) {
+    cerr << "unlink: error: file not found" << endl;
+  } else if(linked->type != file) {
+    cerr << "unlink: error: " << args[1] << " must be a file" << endl;
+  } else {
+    auto parent = linked->parent.lock();
+    parent->contents.remove(linked);
+  }
 }
 
 void ToyFS::stat(vector<string> args) {
