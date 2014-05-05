@@ -234,37 +234,12 @@ void ToyFS::rmdir(vector<string> args) {
 
 void ToyFS::printwd(vector<string> args) {
   ops_exactly(0);
-<<<<<<< HEAD
-
-  if (pwd == root_dir) {
-      cout << "/" << endl;
-      return;
-  }
-
-  auto wd = pwd;
-  deque<string> plist;
-  while(wd != root_dir) {
-    plist.push_front(wd->name);
-    wd = wd->parent.lock();
-  }
-
-  cout << "/";
-  for (auto dirname : plist) {
-      cout << dirname << "/";
-  }
-  cout << endl;
-}
-||||||| merged common ancestors
-  cout << pwd->name << endl;
-}
-=======
->>>>>>> origin
 
   if(pwd == root_dir) {
       cout << "/" << endl;
       return;
   }
-  
+
   auto wd = pwd;
   deque<string> plist;
   while(wd != root_dir) {
@@ -288,7 +263,6 @@ void ToyFS::cd(vector<string> args) {
   }
 
   auto path_tokens = parse_path(args[1]);
-<<<<<<< HEAD
   if (path_tokens.size() == 0) {
     pwd = root_dir;
     return;
@@ -299,39 +273,6 @@ void ToyFS::cd(vector<string> args) {
   if (where == nullptr) {
     cerr << "Invalid path: " << args[1] << endl;
     return;
-||||||| merged common ancestors
-  if(path_tokens.size() == 0) {
-    pwd = root_dir;
-    return;
-  }
-  auto chg_dir_name = path_tokens.back();
-  if (path_tokens.size() >= 2) {
-    path_tokens.pop_back();
-    where = find_file(where, path_tokens);
-  }
-  
-  if(where != nullptr) {
-      if(chg_dir_name == ".." || chg_dir_name == ".") {
-          pwd = where;
-          return;
-      }
-      for(auto dir : where->contents) {
-          if(dir->name == chg_dir_name) {
-              pwd = dir;
-              return;
-          }
-      }
-      cerr << chg_dir_name << " not found" << endl; 
-  } else {
-    cerr << "Invalid path" << endl;
-=======
-  where = find_file(where, path_tokens);
-  
-  if(where != nullptr) {
-    pwd = where;
-  } else {
-    cerr << "Invalid path" << endl;
->>>>>>> origin
   }
   pwd = where;
 }
