@@ -13,4 +13,3 @@ class FreeNode {
 };
 
 #endif /* _FREENODE_H_ */
-

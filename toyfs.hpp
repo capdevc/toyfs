@@ -16,7 +16,7 @@ class ToyFS {
   enum Mode {R, W, RW};
   struct Descriptor {
     Mode mode;
-    uint block_pos;
+    uint byte_pos;
     std::weak_ptr<Inode> inode;
     uint fd;
   };
@@ -46,6 +46,7 @@ class ToyFS {
   void init_disk(const std::string& filename);
   std::unique_ptr<PathRet> parse_path(std::string path_str) const;
   bool basic_open(Descriptor *d, std::vector <std::string> args);
+  uint basic_write(Descriptor &desc, std::string data);
 
  public:
   ToyFS(const std::string& filename,

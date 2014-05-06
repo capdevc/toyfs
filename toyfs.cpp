@@ -14,7 +14,11 @@ using std::cout;
 using std::endl;
 using std::istringstream;
 using std::fstream;
+using std::make_pair;
 using std::make_shared;
+using std::max;
+using std::min;
+using std::pair;
 using std::shared_ptr;
 using std::string;
 using std::unique_ptr;
@@ -44,10 +48,10 @@ ToyFS::ToyFS(const string& filename,
              const uint block_size,
              const uint direct_blocks)
     : filename(filename),
-      fs_size(fs_size),
+      fs_size(fs_size * block_size),
       block_size(block_size),
       direct_blocks(direct_blocks),
-      num_blocks(ceil(fs_size / block_size)) {
+      num_blocks(ceil(static_cast<double>(fs_size) / block_size)) {
 
   root_dir = DirEntry::make_de_dir("root", nullptr);
   // start at root dir;
@@ -126,7 +130,7 @@ bool ToyFS::getMode(Mode *mode, string mode_s) {
 
 bool ToyFS::basic_open(Descriptor *d, vector <string> args) {
   assert(args.size() == 3);
-  
+
   Mode mode;
   auto path = parse_path(args[1]);
   auto node = path->final_node;
@@ -151,7 +155,7 @@ bool ToyFS::basic_open(Descriptor *d, vector <string> args) {
     uint fd = next_descriptor++;
     *d = Descriptor{mode, 0, node->inode, fd};
     open_files[fd] = *d;
-    return true; 
+    return true;
   }
   return false;
 }
@@ -194,10 +198,78 @@ void ToyFS::write(vector<string> args) {
       cerr << "write: error: File descriptor not open." << endl;
     } else if(desc->second.mode != W && desc->second.mode != RW) {
       cerr << "write: error: " << args[1] << " not open for write." << endl;
-    } else {
-      //TODO: write to file
+    } else if (!basic_write(desc->second, args[2])) {
+      cerr << "write: error: Insufficient disk space or file too large." << endl;
     }
   }
+}
+
+uint ToyFS::basic_write(Descriptor &desc, string data) {
+  const char *bytes = data.c_str();
+  uint &pos = desc.byte_pos;
+  uint bytes_to_write = data.size();
+  uint bytes_written = 0;
+  auto inode = desc.inode.lock();
+  uint &file_size = inode->size;
+  uint &file_blocks_used = inode->blocks_used;
+  uint new_size = max(file_size, pos + bytes_to_write);
+
+  // find space
+  vector<pair<uint, uint>> free_chunks;
+  uint blocks_needed = ceil(static_cast<double>(new_size)/block_size) - file_blocks_used;
+  auto fl_it = begin(free_list);
+  while (blocks_needed > 0) {
+    if (fl_it == end(free_list)) {
+      // 0 return because we ran out of free space
+      return 0;}
+    if (fl_it->num_blocks > blocks_needed) {
+      // we found a chunk big enough to hold the rest of our write
+      free_chunks.push_back(make_pair(fl_it->pos, blocks_needed));
+      fl_it->pos += blocks_needed;
+      fl_it->num_blocks -= blocks_needed;
+      break;
+    }
+    // we have a chunk, but will fill it and need more
+    free_chunks.push_back((make_pair(fl_it->pos, fl_it->num_blocks)));
+    auto used_entry = fl_it++;
+    free_list.erase(used_entry);
+  }
+
+  // allocate our blocks
+  for (auto &fc_it : free_chunks) {
+    uint block_pos = fc_it.first;
+    uint num_blocks = fc_it.second;
+    for (uint i = 0; i < num_blocks; ++i, block_pos += block_size) {
+      if (file_blocks_used++ < direct_blocks) {
+        inode->d_blocks.push_back(block_pos);
+      } else {
+        uint index = (file_blocks_used - direct_blocks) / direct_blocks;
+        inode->i_blocks->at(index).push_back(block_pos);
+      }
+    }
+  }
+
+  // actually write our blocks
+  uint dbytes = direct_blocks * block_size - 1;
+  while (bytes_to_write > 0) {
+    uint write_size = min({block_size, block_size - pos % block_size, bytes_to_write});
+    uint write_dest = 0;
+    if (pos < dbytes) {
+      write_dest = inode->d_blocks[pos / block_size] + pos % block_size;
+    } else {
+      uint i = (pos - dbytes) / (block_size * block_size);
+      uint j = pos / block_size;
+      write_dest = inode->i_blocks->at(i)[j] + pos % block_size;
+    }
+    disk_file.seekp(write_dest);
+    disk_file.write(bytes + bytes_written, write_size);
+    bytes_written += write_size;
+    bytes_to_write -= write_size;
+    pos += write_size;
+  }
+
+  file_size = new_size;
+  return bytes_written;
 }
 
 void ToyFS::seek(vector<string> args) {
@@ -371,7 +443,7 @@ void ToyFS::stat(vector<string> args) {
       cout << "  File: " << node->name << endl;
       if (node->type == file) {
         cout << "  Type: file" << endl;
-        cout << " Inode: " << node->inode << endl;
+        cout << " Inode: " << node->inode.get() << endl;
         cout << " Links: " << node->inode.use_count() << endl;
         cout << "  Size: " << node->inode->size << endl;
         cout << "Blocks: " << node->inode->blocks_used << endl;
