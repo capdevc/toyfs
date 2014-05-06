@@ -120,12 +120,11 @@ void ToyFS::open(vector<string> args) {
   // get the file pointer or create the file
   if (path->invalid_path == true) {
     cerr << "open: error: Invalid path: " << args[1] << endl;
-  }
-  if (node == root_dir) {
+    return;
+  } else if (node == root_dir) {
     cerr << "open: error: Cannot open root." << endl;
     return;
-  }
-  if (node == nullptr) {
+  } else if (node == nullptr) {
     if (mode == 1) {
       cout << "open: error: File does not exist." << endl;
       return;
@@ -176,14 +175,10 @@ void ToyFS::mkdir(vector<string> args) {
     if (path->invalid_path) {
       cerr << "mkdir: error: Invalid path: " << args[i] << endl;
       return;
-    }
-    if (node == root_dir) {
-        cerr << "mkdir: error: Cannot recreate root." << endl;
-        return;
-    }
-
-    /* check that this directory doesn't exist */
-    if (node != nullptr) {
+    } else if (node == root_dir) {
+      cerr << "mkdir: error: Cannot recreate root." << endl;
+      return;
+    } else if (node != nullptr) {
       cerr << "mkdir: error: " << args[i] << " already exists." << endl;
       continue;
     }
