@@ -191,22 +191,24 @@ void ToyFS::mkdir(vector<string> args) {
 void ToyFS::rmdir(vector<string> args) {
   ops_at_least(1);
 
-  auto path = parse_path(args[1]);
-  auto node = path->final_node;
-  auto parent = path->parent_node;
+  for (uint i = 1; i < args.size(); i++) {
+    auto path = parse_path(args[i]);
+    auto node = path->final_node;
+    auto parent = path->parent_node;
 
-  if (node == nullptr) {
-    cerr << "rmdir: error: Invalid path: " << args[1] << endl;
-  } else if (node == root_dir) {
-    cerr << "rmdir: error: Cannot remove root." << endl;
-  } else if (node == pwd) {
-    cerr << "rmdir: error: Cannot remove working directory." << endl;
-  } else if (node->contents.size() > 0) {
-    cerr << "rmdir: error: Directory not empty." << endl;
-  } else if (node->type != dir) {
-    cerr << "rmdir: error: " << node->name << " must be directory." << endl;
-  } else {
-    parent->contents.remove(node);
+    if (node == nullptr) {
+      cerr << "rmdir: error: Invalid path: " << args[i] << endl;
+    } else if (node == root_dir) {
+      cerr << "rmdir: error: Cannot remove root." << endl;
+    } else if (node == pwd) {
+      cerr << "rmdir: error: Cannot remove working directory." << endl;
+    } else if (node->contents.size() > 0) {
+      cerr << "rmdir: error: Directory not empty." << endl;
+    } else if (node->type != dir) {
+      cerr << "rmdir: error: " << node->name << " must be directory." << endl;
+    } else {
+      parent->contents.remove(node);
+    }
   }
 }
 
@@ -290,21 +292,23 @@ void ToyFS::unlink(vector<string> args) {
 void ToyFS::stat(vector<string> args) {
   ops_at_least(1);
 
-  auto path = parse_path(args[1]);
-  auto node = path->final_node;
+  for (uint i = 1; i < args.size(); i++) {
+    auto path = parse_path(args[i]);
+    auto node = path->final_node;
 
-  if (node == nullptr) {
-    cerr << "stat: error: " << args[1] << " not found." << endl;
-  } else {
-    cout << "  File: " << node->name << endl;
-    if (node->type == file) {
-      cout << "  Type: file" << endl;
-      cout << " Inode: " << node->inode << endl;
-      cout << " Links: " << node->inode.use_count() << endl;
-      cout << "  Size: " << node->inode->size << endl;
-      cout << "Blocks: " << node->inode->blocks_used << endl;
-    } else if(node->type == dir) {
-      cout << "  Type: directory" << endl;
+    if (node == nullptr) {
+      cerr << "stat: error: " << args[i] << " not found." << endl;
+    } else {
+      cout << "  File: " << node->name << endl;
+      if (node->type == file) {
+        cout << "  Type: file" << endl;
+        cout << " Inode: " << node->inode << endl;
+        cout << " Links: " << node->inode.use_count() << endl;
+        cout << "  Size: " << node->inode->size << endl;
+        cout << "Blocks: " << node->inode->blocks_used << endl;
+      } else if(node->type == dir) {
+        cout << "  Type: directory" << endl;
+      }
     }
   }
 }
