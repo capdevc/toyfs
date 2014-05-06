@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <memory>
 #include <vector>
+#include <string>
 
 class Inode {
  public:
@@ -13,6 +14,9 @@ class Inode {
   std::unique_ptr<std::vector<std::vector<uint>>> i_blocks;
 
   Inode();
+
+  /* momentary dummy function */
+  void write(std::string s) {};
 };
 
 #endif /* _INODE_H_ */

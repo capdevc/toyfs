@@ -400,6 +400,7 @@ void ToyFS::cat(vector<string> args) {
     auto size = desc.inode.lock()->size;
     read(vector<string>
             {args[0], std::to_string(desc.fd), std::to_string(size)});
+    open_files.erase(desc.fd);
   }
 }
 
@@ -432,6 +433,18 @@ void ToyFS::tree(vector<string> args) {
 
 void ToyFS::import(vector<string> args) {
   ops_exactly(2);
+  
+  Descriptor desc;
+  std::ifstream in(args[1]);
+  if(!in.is_open()) {
+    cerr << args[0] << ": error: Unable to open " << args[1] << endl;
+  } else if (basic_open(&desc, vector<string>{args[0], args[2], "w"})) {
+    string line;
+    while (getline(in, line)) {
+      desc.inode.lock()->write(line);
+    }
+    open_files.erase(desc.fd);
+  }
 }
 
 void ToyFS::FS_export(vector<string> args) {
@@ -440,7 +453,6 @@ void ToyFS::FS_export(vector<string> args) {
   std::ofstream out(args[2]);
   if (!out.is_open()) {
     cerr << args[0] << ": error: Unable to open " << args[2] << endl;
-    return;
   } else {
     std::streambuf *coutbuf = cout.rdbuf();
     cat(vector<string> {args[0], args[1]});
