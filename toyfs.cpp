@@ -155,17 +155,51 @@ void ToyFS::read(vector<string> args) {
   ops_exactly(2);
 
   uint fd;
-  istringstream(args[1]) >> fd;
-
-
+  if ( !(istringstream(args[1]) >> fd)) {
+    cerr << "read: error: Unknown descriptor." << endl;
+  } else {
+    auto desc = open_files.find(fd);
+    if (desc == open_files.end()) {
+      cerr << "read: error: File descriptor not open." << endl;
+    } else if(desc->second.mode != R && desc->second.mode != RW) {
+      cerr << "read: error: " << args[1] << " not open for read." << endl;
+    } else {
+      //TODO: read from file
+    }
+  }
 }
 
 void ToyFS::write(vector<string> args) {
-  ops_at_least(2);
+  ops_exactly(2);
+
+  uint fd;
+  if ( !(istringstream(args[1]) >> fd)) {
+    cerr << "write: error: Unknown descriptor." << endl;
+  } else {
+    auto desc = open_files.find(fd);
+    if (desc == open_files.end()) {
+      cerr << "write: error: File descriptor not open." << endl;
+    } else if(desc->second.mode != W && desc->second.mode != RW) {
+      cerr << "write: error: " << args[1] << " not open for write." << endl;
+    } else {
+      //TODO: write to file
+    }
+  }
 }
 
 void ToyFS::seek(vector<string> args) {
   ops_exactly(2);
+  uint fd;
+  if ( !(istringstream(args[1]) >> fd)) {
+    cerr << "seek: error: Unknown descriptor." << endl;
+  } else {
+    auto desc = open_files.find(fd);
+    if (desc == open_files.end()) {
+      cerr << "seek: error: File descriptor not open." << endl;
+    } else {
+      //TODO: seek file
+    }
+  }
 }
 
 void ToyFS::close(vector<string> args) {
