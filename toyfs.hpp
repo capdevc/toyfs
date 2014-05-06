@@ -12,11 +12,14 @@
 
 
 class ToyFS {
+
+  enum Mode {R, W, RW};
   struct Descriptor {
-    uint mode;
+    Mode mode;
     uint block_pos;
     std::weak_ptr<Inode> inode;
   };
+  bool getMode(Mode *mode, std::string mode_s);
 
   struct PathRet {
     bool invalid_path = false;

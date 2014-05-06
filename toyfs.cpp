@@ -108,40 +108,47 @@ unique_ptr<ToyFS::PathRet> ToyFS::parse_path(string path_str) const {
   return ret;
 }
 
+bool ToyFS::getMode(Mode *mode, string mode_s) {
+  if (mode_s == "w") {
+    *mode = W;
+  } else if(mode_s == "r") {
+    *mode = R;
+  } else if (mode_s == "rw") {
+    *mode = RW;
+  } else {
+    return false;
+  }
+  return true;
+}
+
 void ToyFS::open(vector<string> args) {
   ops_exactly(2);
-  uint mode;
-  istringstream(args[2]) >> mode;
+  Mode mode;
 
   auto path = parse_path(args[1]);
   auto node = path->final_node;
   auto parent = path->parent_node;
+  bool known_mode = getMode(&mode, args[2]);
 
-  // get the file pointer or create the file
   if (path->invalid_path == true) {
     cerr << "open: error: Invalid path: " << args[1] << endl;
-    return;
-  } else if (node == root_dir) {
-    cerr << "open: error: Cannot open root." << endl;
-    return;
-  } else if (node == nullptr) {
-    if (mode == 1) {
-      cout << "open: error: File does not exist." << endl;
-      return;
-    } else {
+  } else if(!known_mode) {
+    cerr << "open: error: Unknown mode: " << args[2] << endl;
+  } else if (node == nullptr && (mode == R || mode == RW)) {
+    cerr << "open: error: File does not exist." << endl;
+  } else if (node != nullptr && node->type == dir) {
+    cerr << "open: error: Cannot open a directory." << endl;
+  } else {
+    //create the file if necessary
+    if(node == nullptr) {
       node = parent->add_file(path->final_name);
     }
-  }
-  if (node->type == dir) {
-    cout << "open: error: Cannot open a directory." << endl;
-    return;
-  }
 
-  // get a descriptor
-  uint fd = next_descriptor++;
-  open_files[fd] = Descriptor{mode, 0, node->inode};
-  cout << fd << endl;
-  return;
+    // get a descriptor
+    uint fd = next_descriptor++;
+    open_files[fd] = Descriptor{mode, 0, node->inode};
+    cout << fd << endl;
+  }
 }
 
 void ToyFS::read(vector<string> args) {
