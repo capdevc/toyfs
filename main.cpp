@@ -72,7 +72,7 @@ void repl(const string filename) {
         } else if (args[0] == "open") {
             fs->open(args);
         } else if (args[0] == "read") {
-            fs->close(args);
+            fs->read(args);
         } else if (args[0] == "write") {
             fs->write(args);
         } else if (args[0] == "seek") {
