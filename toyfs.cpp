@@ -136,7 +136,7 @@ bool ToyFS::basic_open(Descriptor *d, vector <string> args) {
   } else if(!known_mode) {
     cerr << args[0] << ": error: Unknown mode: " << args[2] << endl;
   } else if (node == nullptr && (mode == R || mode == RW)) {
-    cerr << args[0] << ": error: File does not exist." << endl;
+    cerr << args[0] << ": error: " << args[1] << " does not exist." << endl;
   } else if (node != nullptr && node->type == dir) {
     cerr << args[0] << ": error: Cannot open a directory." << endl;
   } else {
@@ -437,20 +437,13 @@ void ToyFS::import(vector<string> args) {
 void ToyFS::FS_export(vector<string> args) {
   ops_exactly(2);
 
-  std::ofstream out("/dev/null");
-  std::streambuf *coutbuf = cout.rdbuf();
-
-  auto fd = next_descriptor;
-  cout.rdbuf(out.rdbuf());
-  open(vector<string> {"open", args[1], "r"});
-  cout.rdbuf(coutbuf);
-  
-  if (fd == next_descriptor) {
-    /* unable to open */
+  std::ofstream out(args[2]);
+  if (!out.is_open()) {
+    cerr << args[0] << ": error: Unable to open " << args[2] << endl;
     return;
+  } else {
+    std::streambuf *coutbuf = cout.rdbuf();
+    cat(vector<string> {args[0], args[1]});
+    cout.rdbuf(coutbuf);
   }
-
-  auto src = parse_path(args[1]);
-  auto src_node = src->final_node;
-
 }
