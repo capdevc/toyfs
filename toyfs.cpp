@@ -378,6 +378,26 @@ void ToyFS::ls(vector<string> args) {
 
 void ToyFS::cat(vector<string> args) {
   ops_at_least(1);
+
+  std::ofstream out("/dev/null");
+  std::streambuf *coutbuf = cout.rdbuf();
+
+  for(uint i = 1; i < args.size(); i++) {
+    uint fd = next_descriptor;
+
+    cout.rdbuf(out.rdbuf());
+    open(vector<string> {"open", args[i], "r"});
+    cout.rdbuf(coutbuf);
+
+    if (fd == next_descriptor) {
+      /* failed to open */
+      continue;
+    }
+    
+    auto desc = open_files.find(fd)->second;
+    auto size = desc.inode.lock()->size;
+    read(vector<string> {"read", std::to_string(fd), std::to_string(size)});
+  }
 }
 
 void ToyFS::cp(vector<string> args) {
