@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <deque>
+#include <assert.h>
 
 using std::cerr;
 using std::cout;
@@ -121,23 +122,23 @@ bool ToyFS::getMode(Mode *mode, string mode_s) {
   return true;
 }
 
-void ToyFS::open(vector<string> args) {
-  ops_exactly(2);
+bool ToyFS::basic_open(Descriptor *d, vector <string> args) {
+  assert(args.size() == 3);
+  
   Mode mode;
-
   auto path = parse_path(args[1]);
   auto node = path->final_node;
   auto parent = path->parent_node;
   bool known_mode = getMode(&mode, args[2]);
 
   if (path->invalid_path == true) {
-    cerr << "open: error: Invalid path: " << args[1] << endl;
+    cerr << args[0] << ": error: Invalid path: " << args[1] << endl;
   } else if(!known_mode) {
-    cerr << "open: error: Unknown mode: " << args[2] << endl;
+    cerr << args[0] << ": error: Unknown mode: " << args[2] << endl;
   } else if (node == nullptr && (mode == R || mode == RW)) {
-    cerr << "open: error: File does not exist." << endl;
+    cerr << args[0] << ": error: File does not exist." << endl;
   } else if (node != nullptr && node->type == dir) {
-    cerr << "open: error: Cannot open a directory." << endl;
+    cerr << args[0] << ": error: Cannot open a directory." << endl;
   } else {
     //create the file if necessary
     if(node == nullptr) {
@@ -146,8 +147,18 @@ void ToyFS::open(vector<string> args) {
 
     // get a descriptor
     uint fd = next_descriptor++;
-    open_files[fd] = Descriptor{mode, 0, node->inode};
-    cout << fd << endl;
+    *d = Descriptor{mode, 0, node->inode, fd};
+    open_files[fd] = *d;
+    return true; 
+  }
+  return false;
+}
+
+void ToyFS::open(vector<string> args) {
+  ops_exactly(2);
+  Descriptor desc;
+  if (basic_open(&desc, args)) {
+    cout << desc.fd << endl;
   }
 }
 
@@ -379,24 +390,16 @@ void ToyFS::ls(vector<string> args) {
 void ToyFS::cat(vector<string> args) {
   ops_at_least(1);
 
-  std::ofstream out("/dev/null");
-  std::streambuf *coutbuf = cout.rdbuf();
-
   for(uint i = 1; i < args.size(); i++) {
-    uint fd = next_descriptor;
-
-    cout.rdbuf(out.rdbuf());
-    open(vector<string> {"open", args[i], "r"});
-    cout.rdbuf(coutbuf);
-
-    if (fd == next_descriptor) {
+    Descriptor desc;
+    if(!basic_open(&desc, vector<string> {args[0], args[i], "r"})) {
       /* failed to open */
       continue;
     }
     
-    auto desc = open_files.find(fd)->second;
     auto size = desc.inode.lock()->size;
-    read(vector<string> {"read", std::to_string(fd), std::to_string(size)});
+    read(vector<string>
+            {args[0], std::to_string(desc.fd), std::to_string(size)});
   }
 }
 
@@ -433,4 +436,21 @@ void ToyFS::import(vector<string> args) {
 
 void ToyFS::FS_export(vector<string> args) {
   ops_exactly(2);
+
+  std::ofstream out("/dev/null");
+  std::streambuf *coutbuf = cout.rdbuf();
+
+  auto fd = next_descriptor;
+  cout.rdbuf(out.rdbuf());
+  open(vector<string> {"open", args[1], "r"});
+  cout.rdbuf(coutbuf);
+  
+  if (fd == next_descriptor) {
+    /* unable to open */
+    return;
+  }
+
+  auto src = parse_path(args[1]);
+  auto src_node = src->final_node;
+
 }

@@ -18,6 +18,7 @@ class ToyFS {
     Mode mode;
     uint block_pos;
     std::weak_ptr<Inode> inode;
+    uint fd;
   };
   bool getMode(Mode *mode, std::string mode_s);
 
@@ -43,6 +44,7 @@ class ToyFS {
 
   void init_disk(const std::string& filename);
   std::unique_ptr<PathRet> parse_path(std::string path_str) const;
+  bool basic_open(Descriptor *d, std::vector <std::string> args);
 
  public:
   ToyFS(const std::string& filename, const uint fs_size, const uint block_size);
