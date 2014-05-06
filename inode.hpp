@@ -14,9 +14,6 @@ class Inode {
   std::unique_ptr<std::vector<std::vector<uint>>> i_blocks;
 
   Inode();
-
-  /* momentary dummy function */
-  void write(std::string s) {};
 };
 
 #endif /* _INODE_H_ */

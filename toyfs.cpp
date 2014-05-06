@@ -277,13 +277,21 @@ void ToyFS::seek(vector<string> args) {
   uint fd;
   if ( !(istringstream(args[1]) >> fd)) {
     cerr << "seek: error: Unknown descriptor." << endl;
+    return;
+  }
+  auto desc_it = open_files.find(fd);
+  if (desc_it == open_files.end()) {
+    cerr << "seek: error: File descriptor not open." << endl;
+    return;
+  }
+  auto &desc = desc_it->second;
+  uint pos;
+  if (!(istringstream(args[2]) >> pos)) {
+    cerr << "seek: error: Invalid position." << endl;
+  } else if (pos > desc.inode.lock()->size) {
+    cerr << "seek: error: Position outside file." << endl;
   } else {
-    auto desc = open_files.find(fd);
-    if (desc == open_files.end()) {
-      cerr << "seek: error: File descriptor not open." << endl;
-    } else {
-      //TODO: seek file
-    }
+    desc.byte_pos = pos;
   }
 }
 
