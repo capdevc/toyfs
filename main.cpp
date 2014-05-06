@@ -18,9 +18,10 @@ using std::vector;
 const string PRMPT = "sh> ";
 const uint DISKSIZE = 102400;
 const uint BLOCKSIZE = 1024;
+const uint DIRECTBLOCKS = 50;
 
 int test_fs(const string filename) {
-  ToyFS myfs(filename, DISKSIZE, BLOCKSIZE);
+  ToyFS myfs(filename, DISKSIZE, BLOCKSIZE, DIRECTBLOCKS);
 
   vector<string> args1 = {"mkdir", "/dir-1"};
   vector<string> args2 = {"mkdir", "/dir-1/dir-b"};
@@ -46,7 +47,7 @@ int test_fs(const string filename) {
 
 void repl(const string filename) {
 
-    ToyFS *fs = new ToyFS(filename, DISKSIZE, BLOCKSIZE);
+  ToyFS *fs = new ToyFS(filename, DISKSIZE, BLOCKSIZE, DIRECTBLOCKS);
 
     string cmd;
     vector<string> args;
@@ -65,7 +66,7 @@ void repl(const string filename) {
         if (args[0] == "mkfs") {
             if (args.size() == 1) {
                 delete(fs);
-                fs = new ToyFS(filename, DISKSIZE, BLOCKSIZE);
+                fs = new ToyFS(filename, DISKSIZE, BLOCKSIZE, DIRECTBLOCKS);
             } else {
                 cerr << "mkfs: too many operands" << endl;
             }

@@ -41,10 +41,12 @@ using std::setw;
 
 ToyFS::ToyFS(const string& filename,
              const uint fs_size,
-             const uint block_size)
+             const uint block_size,
+             const uint direct_blocks)
     : filename(filename),
       fs_size(fs_size),
       block_size(block_size),
+      direct_blocks(direct_blocks),
       num_blocks(ceil(fs_size / block_size)) {
 
   root_dir = DirEntry::make_de_dir("root", nullptr);

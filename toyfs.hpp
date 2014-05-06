@@ -33,6 +33,7 @@ class ToyFS {
   std::fstream disk_file;
   const uint fs_size;
   const uint block_size;
+  const uint direct_blocks;
   const uint num_blocks;
 
   // DirEntry root;
@@ -47,7 +48,10 @@ class ToyFS {
   bool basic_open(Descriptor *d, std::vector <std::string> args);
 
  public:
-  ToyFS(const std::string& filename, const uint fs_size, const uint block_size);
+  ToyFS(const std::string& filename,
+        const uint fs_size,
+        const uint block_size,
+        const uint direct_blocks);
   ~ToyFS();
   void open(std::vector<std::string> args);
   void read(std::vector<std::string> args);
