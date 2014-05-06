@@ -160,7 +160,12 @@ void ToyFS::close(vector<string> args) {
   ops_exactly(1);
   uint fd;
   istringstream(args[1]) >> fd;
-  open_files.erase(fd);
+  auto kv = open_files.find(fd);
+  if(kv == open_files.end()) {
+    cerr << "close: error: File descriptor not open" << endl;
+  } else {
+    open_files.erase(fd);
+  }
 }
 
 void ToyFS::mkdir(vector<string> args) {
