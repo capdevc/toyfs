@@ -146,6 +146,11 @@ void ToyFS::open(vector<string> args) {
 
 void ToyFS::read(vector<string> args) {
   ops_exactly(2);
+
+  uint fd;
+  istringstream(args[1]) >> fd;
+
+
 }
 
 void ToyFS::write(vector<string> args) {
@@ -159,12 +164,17 @@ void ToyFS::seek(vector<string> args) {
 void ToyFS::close(vector<string> args) {
   ops_exactly(1);
   uint fd;
-  istringstream(args[1]) >> fd;
-  auto kv = open_files.find(fd);
-  if(kv == open_files.end()) {
-    cerr << "close: error: File descriptor not open" << endl;
+
+  if (! (istringstream (args[1]) >> fd)) {
+    cerr << "close: error: File descriptor not recognized" << endl;
   } else {
-    open_files.erase(fd);
+    auto kv = open_files.find(fd);
+    if (kv == open_files.end()) {
+      cerr << "close: error: File descriptor not open" << endl;
+    } else {
+      open_files.erase(fd);
+      cout << "closed " << fd << endl;
+    }
   }
 }
 
