@@ -164,7 +164,7 @@ void ToyFS::open(vector<string> args) {
   ops_exactly(2);
   Descriptor desc;
   if (basic_open(&desc, args)) {
-    cout << desc.fd << endl;
+    cout << "SUCCESS: fd=" << desc.fd << endl;
   }
 }
 
@@ -589,7 +589,7 @@ void ToyFS::FS_export(vector<string> args) {
   if (!out.is_open()) {
     cerr << args[0] << ": error: Unable to open " << args[2] << endl;
   } else {
-    std::streambuf *coutbuf = cout.rdbuf();
+    std::streambuf *coutbuf = cout.rdbuf(out.rdbuf());
     cat(vector<string> {args[0], args[1]});
     cout.rdbuf(coutbuf);
   }
