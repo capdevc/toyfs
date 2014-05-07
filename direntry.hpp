@@ -25,6 +25,7 @@ class DirEntry: public std::enable_shared_from_this<DirEntry> {
   std::weak_ptr<DirEntry> self;
   std::shared_ptr<Inode> inode;
   std::list<std::shared_ptr<DirEntry>> contents;
+  bool is_locked;
 
   std::shared_ptr<DirEntry> find_child(const std::string name) const;
   std::shared_ptr<DirEntry> add_dir(const std::string name);

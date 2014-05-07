@@ -145,6 +145,8 @@ bool ToyFS::basic_open(Descriptor *d, vector <string> args) {
     cerr << args[0] << ": error: " << args[1] << " does not exist." << endl;
   } else if (node != nullptr && node->type == dir) {
     cerr << args[0] << ": error: Cannot open a directory." << endl;
+  } else if (node != nullptr && node->is_locked) {
+    cerr << args[0] << ": error: " << args[1] << " is already open." << endl;
   } else {
     //create the file if necessary
     if(node == nullptr) {
@@ -153,7 +155,8 @@ bool ToyFS::basic_open(Descriptor *d, vector <string> args) {
 
     // get a descriptor
     uint fd = next_descriptor++;
-    *d = Descriptor{mode, 0, node->inode, fd};
+    node->is_locked = true;
+    *d = Descriptor{mode, 0, node->inode, node, fd};
     open_files[fd] = *d;
     return true;
   }
@@ -348,6 +351,18 @@ void ToyFS::seek(vector<string> args) {
   }
 }
 
+bool ToyFS::basic_close(uint fd) {
+  auto kv = open_files.find(fd);
+  if(kv == open_files.end()) {
+    return false;
+  } else {
+    kv->second.from.lock()->is_locked = false;
+    open_files.erase(fd);
+  }
+  return true;
+}
+
+
 void ToyFS::close(vector<string> args) {
   ops_exactly(1);
   uint fd;
@@ -355,11 +370,9 @@ void ToyFS::close(vector<string> args) {
   if (! (istringstream (args[1]) >> fd)) {
     cerr << "close: error: File descriptor not recognized" << endl;
   } else {
-    auto kv = open_files.find(fd);
-    if (kv == open_files.end()) {
+    if (!basic_close(fd)) {
       cerr << "close: error: File descriptor not open" << endl;
     } else {
-      open_files.erase(fd);
       cout << "closed " << fd << endl;
     }
   }
@@ -486,6 +499,8 @@ void ToyFS::unlink(vector<string> args) {
     cerr << "unlink: error: File not found." << endl;
   } else if (node->type != file) {
     cerr << "unlink: error: " << args[1] << " must be a file." << endl;
+  } else if (node->is_locked) {
+    cerr << "unlink: error: " << args[1] << " is open." << endl;
   } else {
     parent->contents.remove(node);
   }
@@ -535,7 +550,7 @@ void ToyFS::cat(vector<string> args) {
     auto size = desc.inode.lock()->size;
     read(vector<string>
             {args[0], std::to_string(desc.fd), std::to_string(size)});
-    open_files.erase(desc.fd);
+    basic_close(desc.fd);
   }
 }
 
@@ -545,15 +560,15 @@ void ToyFS::cp(vector<string> args) {
   Descriptor src, dest;
   if(basic_open(&src, vector<string> {args[0], args[1], "r"})) {
     if(!basic_open(&dest, vector<string> {args[0], args[2], "w"})) {
-      open_files.erase(src.fd);
+      basic_close(src.fd);
     } else {
       auto data = basic_read(src, src.inode.lock()->size);
       if (!basic_write(dest, *data)) {
         cerr << args[0] << ": error: out of free space or file too large"
              << endl;
       }
-      open_files.erase(src.fd);
-      open_files.erase(dest.fd);
+      basic_close(src.fd);
+      basic_close(dest.fd);
     }
   }
 }
@@ -597,7 +612,7 @@ void ToyFS::import(vector<string> args) {
         break;
       }
     }
-    open_files.erase(desc.fd);
+    basic_close(desc.fd);
   }
 }
 

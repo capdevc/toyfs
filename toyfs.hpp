@@ -18,6 +18,7 @@ class ToyFS {
     Mode mode;
     uint byte_pos;
     std::weak_ptr<Inode> inode;
+    std::weak_ptr<DirEntry> from;
     uint fd;
   };
   bool getMode(Mode *mode, std::string mode_s);
@@ -48,6 +49,7 @@ class ToyFS {
   bool basic_open(Descriptor *d, std::vector <std::string> args);
   std::unique_ptr<std::string> basic_read(Descriptor &desc, const uint size);
   uint basic_write(Descriptor &desc, const std::string data);
+  bool basic_close(uint fd);
 
  public:
   ToyFS(const std::string& filename,

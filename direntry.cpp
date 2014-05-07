@@ -12,7 +12,9 @@ using std::string;
 using std::vector;
 using std::weak_ptr;
 
-DirEntry::DirEntry() {}
+DirEntry::DirEntry() {
+  is_locked = false;
+}
 
 shared_ptr<DirEntry> DirEntry::make_de_dir(const string name,
                                            const shared_ptr<DirEntry> parent) {
