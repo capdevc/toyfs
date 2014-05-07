@@ -1,8 +1,8 @@
 toyfs
 =====
 
-toy filesystem in c++
-Cris Capdevila
+toy filesystem in c++;
+Cris Capdevila;
 Alexander Saites
 
 
