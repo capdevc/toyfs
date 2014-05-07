@@ -85,7 +85,7 @@ unique_ptr<ToyFS::PathRet> ToyFS::parse_path(string path_str) const {
   // check if path is relative or absolute
   ret->final_node = pwd;
   if (path_str[0] =='/') {
-    path_str.erase(0);
+    path_str.erase(0,1);
     ret->final_node = root_dir;
   }
   // initialize data structure
@@ -102,7 +102,7 @@ unique_ptr<ToyFS::PathRet> ToyFS::parse_path(string path_str) const {
 
   // walk the path updating pointers
   for (auto &node_name : path_tokens) {
-    if (ret->parent_node == nullptr) {
+    if (ret->final_node == nullptr) {
       // something other than the last entry was not found
       ret->invalid_path = true;
       return ret;
@@ -482,10 +482,12 @@ void ToyFS::unlink(vector<string> args) {
   auto node = path->final_node;
   auto parent = path->parent_node;
 
- if (node == nullptr) {
+  if (node == nullptr) {
     cerr << "unlink: error: File not found." << endl;
- } else if (node->type != file) {
+  } else if (node->type != file) {
     cerr << "unlink: error: " << args[1] << " must be a file." << endl;
+  } else if(node->locked) {
+    cerr << "unlink: error: " << args[1] << " is open." << endl;
   } else {
     parent->contents.remove(node);
   }
@@ -543,19 +545,18 @@ void ToyFS::cp(vector<string> args) {
   ops_exactly(2);
   
   Descriptor src, dest;
-  if(!basic_open(&src, vector<string> {args[0], args[1], "r"})) {
-    cerr << args[0] << ": error: Unable to open " << args[1] << endl;
-  } else if(!basic_open(&dest, vector<string> {args[0], args[2], "w"})) {
-    cerr << args[0] << ": error: Unable to open " << args[2] << endl;
-    open_files.erase(src.fd);
-  } else {
-    auto data = basic_read(src, src.inode.lock()->size);
-    if (!basic_write(dest, *data)) {
-      cerr << args[0] << ": error: out of free space or file too large"
-           << endl;
+  if(basic_open(&src, vector<string> {args[0], args[1], "r"})) {
+    if(!basic_open(&dest, vector<string> {args[0], args[2], "w"})) {
+      open_files.erase(src.fd);
+    } else {
+      auto data = basic_read(src, src.inode.lock()->size);
+      if (!basic_write(dest, *data)) {
+        cerr << args[0] << ": error: out of free space or file too large"
+             << endl;
+      }
+      open_files.erase(src.fd);
+      open_files.erase(dest.fd);
     }
-    open_files.erase(src.fd);
-    open_files.erase(dest.fd);
   }
 }
 
