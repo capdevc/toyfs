@@ -541,6 +541,22 @@ void ToyFS::cat(vector<string> args) {
 
 void ToyFS::cp(vector<string> args) {
   ops_exactly(2);
+  
+  Descriptor src, dest;
+  if(!basic_open(&src, vector<string> {args[0], args[1], "r"})) {
+    cerr << args[0] << ": error: Unable to open " << args[1] << endl;
+  } else if(!basic_open(&dest, vector<string> {args[0], args[2], "w"})) {
+    cerr << args[0] << ": error: Unable to open " << args[2] << endl;
+    open_files.erase(src.fd);
+  } else {
+    auto data = basic_read(src, src.inode.lock()->size);
+    if (!basic_write(dest, *data)) {
+      cerr << args[0] << ": error: out of free space or file too large"
+           << endl;
+    }
+    open_files.erase(src.fd);
+    open_files.erase(dest.fd);
+  }
 }
 
 void tree_helper(shared_ptr<DirEntry> directory, string indent) {
@@ -576,7 +592,11 @@ void ToyFS::import(vector<string> args) {
   } else if (basic_open(&desc, vector<string>{args[0], args[2], "w"})) {
     string line;
     while (getline(in, line)) {
-      basic_write(desc, line);
+      if( !basic_write(desc, line) ){
+        cerr << args[0] << ": error: out of free space or file too large"
+            << endl;
+        break;
+      }
     }
     open_files.erase(desc.fd);
   }
