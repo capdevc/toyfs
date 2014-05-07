@@ -75,6 +75,21 @@ void repl(const string filename) {
         } else if (args[0] == "read") {
             fs->read(args);
         } else if (args[0] == "write") {
+            if(args.size() >= 3) {
+              auto start = cmd.find("\"");
+              auto end = cmd.find("\"", start+1);
+              if (start != string::npos && end != string::npos) {
+                string w_str = cmd.substr(start+1, end-start-1);
+                auto rn = cmd.find_first_not_of(" \t",end+1);
+                if (rn != string::npos) {
+                  args = {args[0], args[1], w_str, cmd.substr(rn)};
+                } else {
+                  args = {args[0], args[1], w_str};
+                }
+              }
+            } else {
+              args = {"write"};
+            }
             fs->write(args);
         } else if (args[0] == "seek") {
             fs->seek(args);
