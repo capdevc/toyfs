@@ -13,9 +13,17 @@ system with a fake disk (a flat file) and offers several commands.
 
 How do I compile it?
 --------------------
-With Clang 3.0+ and llvm installed, simply call "make". You can define DEBUG
-in the makefile, in which case executing the program will allow it to test
-some simple test cases.
+With Clang 3.0+ and llvm installed, simply call "make". You can also use 'make
+debug', in which case executing the program will allow it to test some simple 
+test cases. If you do so, you can pipe the output to another file and diff it 
+with 'CorrectOutput.txt':
+
+    > make clean
+    > make debug
+    > ./main fsFile > output
+    > diff output CorrectOutput
+    
+You'll find that the inode numbers are likely different on your system.    
 
 How do I run it?
 ----------------

@@ -1,0 +1,70 @@
+SUCCESS: fd=0
+SUCCESS: fd=1
+closed 0
+SUCCESS: fd=2
+there
+dir-2
+somefile
+somefile2
+closed 1
+closed 2
+hi there buddy
+root
+├───dir-2
+│   └───dir-b
+│       └───dir-deep
+├───somefile
+└───somefile2
+hi there buddy
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed malesuada nibh lorem, in ornare purus ornare vitae. Pellentesque volutpat ac enim et hendrerit. Ut sed tincidunt purus. Cras pellentesque interdum odio non faucibus. Pellentesque sed lobortis ipsum, et imperdiet massa. Praesent elementum hendrerit nisi, in tincidunt mi egestas at. Mauris rutrum, lacus eget pulvinar sodales, massa orci congue arcu, mattis congue sem risus id augue. Phasellus ultricies tortor sit amet justo auctor, sit amet iaculis odio suscipit. Nunc et lectus et mauris venenatis cursus. Sed quis sem in tortor ornare tincidunt. Suspendisse nibh elit, malesuada eget purus eu, lacinia dictum sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+Suspendisse potenti. Donec at luctus leo, et congue leo. Aenean auctor mattis risus. Nullam laoreet leo augue, nec accumsan enim pretium eget. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Quisque hendrerit ac nulla et dictum. Etiam at sem eget lorem sodales egestas. Maecenas blandit, sapien ac pharetra condimentum, nisi ante pretium purus, quis commodo quam neque at felis. Sed eget nisl vel erat eleifend hendrerit vel sed mauris.
+
+Aliquam erat volutpat. Donec sed interdum dolor, vel bibendum nulla. Donec rutrum, enim at malesuada cursus, massa massa luctus mi, vel elementum orci augue id metus. Cras non elit eget leo suscipit accumsan. Nullam turpis neque, consectetur vitae convallis in, gravida at nunc. Fusce nulla leo, mollis a mauris ac, tempus consequat velit. Donec vehicula consequat lectus, id condimentum massa viverra vitae. Pellentesque ornare dignissim purus, ac congue purus semper vitae. Sed fermentum bibendum metus, ac auctor lorem consectetur ut. Donec sollicitudin, dolor ut bibendum sagittis, orci neque ullamcorper velit, vitae adipiscing libero turpis non quam.
+
+Suspendisse vel euismod ligula. Integer tincidunt nisl a mauris sagittis iaculis. Mauris tincidunt molestie posuere. In ante felis, malesuada in dui ut, rhoncus gravida massa. Sed vel massa risus. Mauris vehicula erat at justo sodales luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut lobortis lectus. Phasellus sed eros cursus, lobortis orci non, gravida arcu. Donec mollis purus vel arcu bibendum, ut congue erat porttitor. Fusce rutrum ligula dignissim faucibus tristique. Cras ipsum orci, ultricies eu massa ut, aliquam rutrum justo. Mauris vel ornare orci, sit amet aliquet ante. Nullam eget leo pellentesque ipsum eleifend semper et non nulla.
+
+Curabitur eu nisl eget magna pulvinar venenatis. Suspendisse dapibus eget nunc quis semper. Aliquam vestibulum turpis nisi, in interdum lectus blandit et. Aliquam vestibulum rhoncus luctus. Mauris elementum tempus diam ullamcorper rutrum. Praesent consequat justo risus, non posuere mi vestibulum nec. Duis auctor rhoncus justo, quis dapibus purus posuere vitae. Morbi auctor nisi id risus sagittis, sit amet tempor velit lacinia. Etiam velit eros, posuere a tortor ut, gravida volutpat leo. Aenean egestas lorem vel urna aliquam sagittis. Phasellus a laoreet urna, vel cursus diam. Nulla id elit ac odio vestibulum pellentesque vitae et mi. Integer ultrices erat vel consequat iaculis. Sed condimentum imperdiet est, sed fringilla odio pretium ac. Nulla fringilla porta urna id scelerisque.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed malesuada nibh lorem, in ornare purus ornare vitae. Pellentesque volutpat ac enim et hendrerit. Ut sed tincidunt purus. Cras pellentesque interdum odio non faucibus. Pellentesque sed lobortis ipsum, et imperdiet massa. Praesent elementum hendrerit nisi, in tincidunt mi egestas at. Mauris rutrum, lacus eget pulvinar sodales, massa orci congue arcu, mattis congue sem risus id augue. Phasellus ultricies tortor sit amet justo auctor, sit amet iaculis odio suscipit. Nunc et lectus et mauris venenatis cursus. Sed quis sem in tortor ornare tincidunt. Suspendisse nibh elit, malesuada eget purus eu, lacinia dictum sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+Suspendisse potenti. Donec at luctus leo, et congue leo. Aenean auctor mattis risus. Nullam laoreet leo augue, nec accumsan enim pretium eget. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Quisque hendrerit ac nulla et dictum. Etiam at sem eget lorem sodales egestas. Maecenas blandit, sapien ac pharetra condimentum, nisi ante pretium purus, quis commodo quam neque at felis. Sed eget nisl vel erat eleifend hendrerit vel sed mauris.
+
+Aliquam erat volutpat. Donec sed interdum dolor, vel bibendum nulla. Donec rutrum, enim at malesuada cursus, massa massa luctus mi, vel elementum orci augue id metus. Cras non elit eget leo suscipit accumsan. Nullam turpis neque, consectetur vitae convallis in, gravida at nunc. Fusce nulla leo, mollis a mauris ac, tempus consequat velit. Donec vehicula consequat lectus, id condimentum massa viverra vitae. Pellentesque ornare dignissim purus, ac congue purus semper vitae. Sed fermentum bibendum metus, ac auctor lorem consectetur ut. Donec sollicitudin, dolor ut bibendum sagittis, orci neque ullamcorper velit, vitae adipiscing libero turpis non quam.
+
+Suspendisse vel euismod ligula. Integer tincidunt nisl a mauris sagittis iaculis. Mauris tincidunt molestie posuere. In ante felis, malesuada in dui ut, rhoncus gravida massa. Sed vel massa risus. Mauris vehicula erat at justo sodales luctus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut lobortis lectus. Phasellus sed eros cursus, lobortis orci non, gravida arcu. Donec mollis purus vel arcu bibendum, ut congue erat porttitor. Fusce rutrum ligula dignissim faucibus tristique. Cras ipsum orci, ultricies eu massa ut, aliquam rutrum justo. Mauris vel ornare orci, sit amet aliquet ante. Nullam eget leo pellentesque ipsum eleifend semper et non nulla.
+
+Curabitur eu nisl eget magna pulvinar venenatis. Suspendisse dapibus eget nunc quis semper. Aliquam vestibulum turpis nisi, in interdum lectus blandit et. Aliquam vestibulum rhoncus luctus. Mauris elementum tempus diam ullamcorper rutrum. Praesent consequat justo risus, non posuere mi vestibulum nec. Duis auctor rhoncus justo, quis dapibus purus posuere vitae. Morbi auctor nisi id risus sagittis, sit amet tempor velit lacinia. Etiam velit eros, posuere a tortor ut, gravida volutpat leo. Aenean egestas lorem vel urna aliquam sagittis. Phasellus a laoreet urna, vel cursus diam. Nulla id elit ac odio vestibulum pellentesque vitae et mi. Integer ultrices erat vel consequat iaculis. Sed condimentum imperdiet est, sed fringilla odio pretium ac. Nulla fringilla porta urna id scelerisque.
+
+root
+├───dir-2
+│   └───dir-b
+│       ├───dir-deep
+│       └───linked
+├───somefile
+├───somefile2
+└───newEx.txt
+  File: somefile
+  Type: file
+ Inode: 0x8756c0
+ Links: 1
+  Size: 14
+Blocks: 1
+  File: somefile2
+  Type: file
+ Inode: 0x875880
+ Links: 1
+  Size: 0
+Blocks: 0
+  File: linked
+  Type: file
+ Inode: 0x875ab0
+ Links: 1
+  Size: 3336
+Blocks: 4
+root
+├───somefile
+├───somefile2
+└───newEx.txt
+/ant
+ant

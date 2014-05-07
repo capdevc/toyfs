@@ -4,6 +4,9 @@ CFLAGS = --std=c++11 -Wall -Wextra -g
 
 default: main
 
+debug: CFLAGS += -DDEBUG
+debug: default 
+
 main: main.cpp toyfs.o direntry.o inode.o
 	$(CXX) $(CFLAGS) -o main main.cpp direntry.o toyfs.o inode.o
 
