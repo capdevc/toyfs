@@ -46,7 +46,8 @@ class ToyFS {
   void init_disk(const std::string& filename);
   std::unique_ptr<PathRet> parse_path(std::string path_str) const;
   bool basic_open(Descriptor *d, std::vector <std::string> args);
-  uint basic_write(Descriptor &desc, std::string data);
+  std::unique_ptr<std::string> basic_read(Descriptor &desc, const uint size);
+  uint basic_write(Descriptor &desc, const std::string data);
 
  public:
   ToyFS(const std::string& filename,
