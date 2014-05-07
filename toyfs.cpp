@@ -2,18 +2,23 @@
 #include <cmath>
 #include <iostream>
 #include <iomanip>
+#include <list>
 #include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
 #include <deque>
 #include <assert.h>
+#include "direntry.hpp"
+#include "inode.hpp"
+#include "freenode.hpp"
 
 using std::cerr;
 using std::cout;
 using std::endl;
 using std::istringstream;
 using std::fstream;
+using std::list;
 using std::make_pair;
 using std::make_shared;
 using std::max;
@@ -48,11 +53,12 @@ ToyFS::ToyFS(const string& filename,
              const uint block_size,
              const uint direct_blocks)
     : filename(filename),
-      fs_size(fs_size * block_size),
       block_size(block_size),
       direct_blocks(direct_blocks),
       num_blocks(ceil(static_cast<double>(fs_size) / block_size)) {
 
+  Inode::block_size = block_size;
+  Inode::free_list = &free_list;
   root_dir = DirEntry::make_de_dir("root", nullptr);
   // start at root dir;
   pwd = root_dir;
@@ -258,19 +264,22 @@ uint ToyFS::basic_write(Descriptor &desc, const string data) {
   uint &file_size = inode->size;
   uint &file_blocks_used = inode->blocks_used;
   uint new_size = max(file_size, pos + bytes_to_write);
+  uint new_blocks_used = ceil(static_cast<double>(new_size)/block_size);
+  uint blocks_needed = new_blocks_used - file_blocks_used;
   uint dbytes = direct_blocks * block_size;
 
   // expand the inode to indirect blocks if needed
-  if (file_size <= dbytes && new_size > dbytes) {
-    inode->i_blocks->resize(direct_blocks);
-    for (uint i = 0; i < direct_blocks; ++i) {
-      inode->i_blocks->at(i).resize(direct_blocks);
+  if (blocks_needed && blocks_needed + file_blocks_used > 2) {
+    uint ivec_used = (ceil(min(file_blocks_used - 2, 0U) / static_cast<float>(direct_blocks)));
+    uint ivec_new = (ceil((new_blocks_used - 2) / static_cast<float>(direct_blocks)));
+    while (ivec_used < ivec_new) {
+      inode->i_blocks->push_back(vector<uint>());
+      ivec_used++;
     }
   }
 
   // find space
   vector<pair<uint, uint>> free_chunks;
-  uint blocks_needed = ceil(static_cast<double>(new_size)/block_size) - file_blocks_used;
   auto fl_it = begin(free_list);
   while (blocks_needed > 0) {
     if (fl_it == end(free_list)) {
@@ -299,8 +308,7 @@ uint ToyFS::basic_write(Descriptor &desc, const string data) {
         inode->d_blocks.push_back(block_pos);
       } else {
         uint i = ((file_blocks_used - direct_blocks) / direct_blocks);
-        uint j = ((file_blocks_used - direct_blocks) % direct_blocks);
-        inode->i_blocks->at(i)[j] = block_pos;
+        inode->i_blocks->at(i).push_back(block_pos);
       }
     }
   }

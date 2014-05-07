@@ -32,15 +32,14 @@ class ToyFS {
 
   const std::string filename;
   std::fstream disk_file;
-  const uint fs_size;
   const uint block_size;
   const uint direct_blocks;
   const uint num_blocks;
 
   // DirEntry root;
+  std::list<FreeNode>free_list;
   std::shared_ptr<DirEntry> root_dir;
   std::shared_ptr<DirEntry> pwd;
-  std::list<FreeNode>free_list;
   std::map<uint, Descriptor> open_files;
   uint next_descriptor = 0;
 
