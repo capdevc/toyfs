@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include "FreeNode.hpp"
+#include "freenode.hpp"
 
 
 class Inode {
