@@ -2,6 +2,8 @@ toyfs
 =====
 
 toy filesystem in c++
+Cris Capdevila
+Alexander Saites
 
 
 What is it?
@@ -145,4 +147,6 @@ Doing so allows other files to use this space if needed.
 We focused other portions of our file system on ease-of-writing, including 
 handing off portions of code to "helper" functions the implement "basic"
 versions of reading, writing, and opening files. Doing so allows cp, cat, 
-and other commands to take advantage of their shared implementation.
+and other commands to take advantage of their shared implementation. Overall
+is a simple file system that emulates many features of the Unix file system
+design.
