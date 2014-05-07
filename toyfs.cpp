@@ -486,8 +486,6 @@ void ToyFS::unlink(vector<string> args) {
     cerr << "unlink: error: File not found." << endl;
   } else if (node->type != file) {
     cerr << "unlink: error: " << args[1] << " must be a file." << endl;
-  } else if(node->locked) {
-    cerr << "unlink: error: " << args[1] << " is open." << endl;
   } else {
     parent->contents.remove(node);
   }
