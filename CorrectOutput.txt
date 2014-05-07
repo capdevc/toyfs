@@ -13,8 +13,8 @@ root
 ├───dir-2
 │   └───dir-b
 │       └───dir-deep
-├───somefile
-└───somefile2
+├───somefile: 14 bytes
+└───somefile2: 0 bytes
 hi there buddy
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed malesuada nibh lorem, in ornare purus ornare vitae. Pellentesque volutpat ac enim et hendrerit. Ut sed tincidunt purus. Cras pellentesque interdum odio non faucibus. Pellentesque sed lobortis ipsum, et imperdiet massa. Praesent elementum hendrerit nisi, in tincidunt mi egestas at. Mauris rutrum, lacus eget pulvinar sodales, massa orci congue arcu, mattis congue sem risus id augue. Phasellus ultricies tortor sit amet justo auctor, sit amet iaculis odio suscipit. Nunc et lectus et mauris venenatis cursus. Sed quis sem in tortor ornare tincidunt. Suspendisse nibh elit, malesuada eget purus eu, lacinia dictum sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 
@@ -40,31 +40,31 @@ root
 ├───dir-2
 │   └───dir-b
 │       ├───dir-deep
-│       └───linked
-├───somefile
-├───somefile2
-└───newEx.txt
+│       └───linked: 3336 bytes
+├───somefile: 14 bytes
+├───somefile2: 0 bytes
+└───newEx.txt: 3336 bytes
   File: somefile
   Type: file
- Inode: 0x8756c0
+ Inode: 0x10976c0
  Links: 1
   Size: 14
 Blocks: 1
   File: somefile2
   Type: file
- Inode: 0x875880
+ Inode: 0x1097880
  Links: 1
   Size: 0
 Blocks: 0
   File: linked
   Type: file
- Inode: 0x875ab0
+ Inode: 0x1097ab0
  Links: 1
   Size: 3336
 Blocks: 4
 root
-├───somefile
-├───somefile2
-└───newEx.txt
+├───somefile: 14 bytes
+├───somefile2: 0 bytes
+└───newEx.txt: 3336 bytes
 /ant
 ant
