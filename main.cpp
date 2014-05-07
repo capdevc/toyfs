@@ -16,9 +16,9 @@ using std::string;
 using std::vector;
 
 const string PRMPT = "sh> ";
-const uint DISKSIZE = 1000;
-const uint BLOCKSIZE = 4;
-const uint DIRECTBLOCKS = 2;
+const uint DISKSIZE = 100000000;
+const uint BLOCKSIZE = 1024;
+const uint DIRECTBLOCKS = 100;
 
 int test_fs(const string filename) {
   ToyFS myfs(filename, DISKSIZE, BLOCKSIZE, DIRECTBLOCKS);

@@ -13,24 +13,7 @@
 #include "inode.hpp"
 #include "freenode.hpp"
 
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::istringstream;
-using std::fstream;
-using std::list;
-using std::make_pair;
-using std::make_shared;
-using std::max;
-using std::min;
-using std::pair;
-using std::shared_ptr;
-using std::string;
-using std::unique_ptr;
-using std::vector;
-using std::weak_ptr;
-using std::deque;
-using std::setw;
+using namespace std;
 
 #define ops_at_least(x)                                 \
   if (static_cast<int>(args.size()) < x+1) {            \
@@ -608,17 +591,16 @@ void ToyFS::import(vector<string> args) {
   ops_exactly(2);
 
   Descriptor desc;
-  std::ifstream in(args[1]);
+  fstream in(args[1]);
   if(!in.is_open()) {
     cerr << args[0] << ": error: Unable to open " << args[1] << endl;
-  } else if (basic_open(&desc, vector<string>{args[0], args[2], "w"})) {
-    string line;
-    while (getline(in, line)) {
-      if( !basic_write(desc, line) ){
-        cerr << args[0] << ": error: out of free space or file too large"
-            << endl;
-        break;
-      }
+    return;
+  }
+  if (basic_open(&desc, vector<string>{args[0], args[2], "w"})) {
+    string data((istreambuf_iterator<char>(in)), istreambuf_iterator<char>());
+    if (!basic_write(desc, data)) {
+      cerr << args[0] << ": error: out of free space or file too large"
+           << endl;
     }
     basic_close(desc.fd);
   }
@@ -627,12 +609,16 @@ void ToyFS::import(vector<string> args) {
 void ToyFS::FS_export(vector<string> args) {
   ops_exactly(2);
 
-  std::ofstream out(args[2]);
+  Descriptor desc;
+  ofstream out(args[2], ofstream::binary);
   if (!out.is_open()) {
     cerr << args[0] << ": error: Unable to open " << args[2] << endl;
-  } else {
-    std::streambuf *coutbuf = cout.rdbuf(out.rdbuf());
-    cat(vector<string> {args[0], args[1]});
-    cout.rdbuf(coutbuf);
+    return;
+  }
+
+ if (basic_open(&desc, vector<string>{args[0], args[1], "r"})) {
+   unique_ptr<string> data = basic_read(desc, desc.inode.lock()->size);
+   out << *data;
+   basic_close(desc.fd);
   }
 }
