@@ -56,6 +56,10 @@ Our ToyFS supports many commands:
                       w: open for writing
                       r: open for reading
                       rw: open for reading and writing
+        The file descriptor is an integer. If you open a file, close it, and
+        reopen it, it is likely the file descriptor will change, so do not 
+        rely on their reuse; only use a file descriptor that has been returned
+        as the result of open to read, write, seek, and close files.
     
     close fd:
         Closes an open file descriptor fd
@@ -117,7 +121,9 @@ Our ToyFS supports many commands:
         List the contents of the current working directory.
 
     tree
-        List the contents of the current directory and every subdirectory.
+        List the contents of the current directory and every subdirectory of
+        the current directory. File sizes are displayed next to ordinary files
+        and links.
 
 
 Design Decisions

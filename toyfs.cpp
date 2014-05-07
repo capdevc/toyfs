@@ -566,7 +566,12 @@ void ToyFS::cp(vector<string> args) {
 
 void tree_helper(shared_ptr<DirEntry> directory, string indent) {
   auto cont = directory->contents;
-  cout << directory->name << endl;
+  if (directory->type == file) {
+    cout << directory->name << ": " << directory->inode->size 
+        << " bytes" << endl;
+  } else {
+    cout << directory->name << endl;
+  }
   if (cont.size() == 0) return;
 
   if (cont.size() >= 2) {
