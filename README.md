@@ -13,17 +13,18 @@ system with a fake disk (a flat file) and offers several commands.
 
 How do I compile it?
 --------------------
-With Clang 3.0+ and llvm installed, simply call "make". You can also use 'make
-debug', in which case executing the program will allow it to test some simple 
-test cases. If you do so, you can pipe the output to another file and diff it 
-with 'CorrectOutput.txt':
+With Clang++ 3.3+, simply call "make". You can also use "make debug", in which 
+case executing the program will allow it to test some simple test cases. If you
+do so, you can pipe the output to another file and diff it with 
+'CorrectOutput.txt':
 
     > make clean
     > make debug
     > ./main fsFile > output
     > diff output CorrectOutput
     
-You'll find that the inode numbers are likely different on your system.    
+You'll find that the inode numbers are likely different on your system. This is
+normal and expected.
 
 How do I run it?
 ----------------
@@ -37,6 +38,11 @@ Since we read commands on stdin and output to stdout and stderr, you can
 redirect input and output as you would any other unix program:
     
     With redirection: ./main filename < inputfile > outputfile
+
+Note that the shell shows a prompt of "sh> " when reading commands, and this
+is output even with indirection. Since newlines would normally be entered by
+the user, a newline is now appended to each command. Thus, when using 
+indirection, expect some "sh> sh> sh> " to be peppered into the output.
 
 What commands can I use?
 ------------------------
